@@ -711,10 +711,18 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
       <label class="flbl">Referrer Address (auto-detected from link)</label>
       <input class="finput" id="regRefInput" placeholder="0x... referrer wallet address" readonly style="opacity:.7;cursor:not-allowed">
 
-      <label class="flbl">First Deposit Amount (USDT)</label>
-      <input class="finput" type="number" id="regAmt" placeholder="Min $2 — Max $50,000">
+      <!-- Hidden regAmt kept for JS compatibility, value not used in gas-only registration -->
+      <input type="hidden" id="regAmt" value="0">
 
-      <button class="fsubmit" id="registerBtn" type="button">🚀 Register + Activate $50 Bonus Miner</button>
+      <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.3);border-radius:var(--rsm);padding:12px 14px;margin-bottom:16px;display:flex;align-items:center;gap:10px">
+        <span style="font-size:18px">⛽</span>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--green)">Gas Fee Only (POL) — No USDT Required!</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">Register with just a small POL gas fee. Deposit USDT anytime after to activate your ROI.</div>
+        </div>
+      </div>
+
+      <button class="fsubmit" id="registerBtn" type="button">🚀 Register Free — Pay Gas Only (POL)</button>
 
       <div class="divider"></div>
       <div style="font-size:11px;color:var(--muted);margin-bottom:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px">10 ROI Tiers</div>
@@ -1105,13 +1113,14 @@ function initRefDetection(){
   detectedRef = detectRefFromURL() || detectedRef;
   const isDetected = !!detectedRef;
   const displayAddr = getDefaultReferrer();
-  const displayText = isDetected ? short(detectedRef) : short(displayAddr)+' (Root wallet default)';
+  // Show address if detected, otherwise just "Default" — no root wallet text
+  const displayText = isDetected ? short(detectedRef) : 'Default';
 
-  document.getElementById('refAddrShow').textContent = displayText;
+  document.getElementById('refAddrShow').textContent = isDetected ? short(detectedRef) : 'Default sponsor';
   document.getElementById('regRefShow').textContent = displayText;
   document.getElementById('regAdminNote').textContent = isDetected
-    ? 'Referral auto-detected from your link'
-    : 'No referral link used — you will join under the root wallet';
+    ? 'Referral link detected ✓'
+    : 'No referral link — default sponsor assigned';
   document.getElementById('regRefInput').value = displayAddr;
 }
 
@@ -1451,18 +1460,18 @@ async function syncWalletConnection(requestAccess){
   await loadContractConfig();
   setConnectButton(short(userAddr));
   // Check if user is registered on-chain
+  let userIsRegistered = false;
   try{
     const info = await contract.getUserInfo(userAddr);
     const referrer = info[0].toString();
-    const isRegistered = referrer !== ZERO_ADDR;
-    if(!isRegistered){
-      // New user — show register page as gateway
-      showRegisterGateway();
-      startLiveROI();
-      return true;
-    }
+    // Registered = referrer is set (not zero address)
+    userIsRegistered = referrer && referrer !== ZERO_ADDR && referrer.toLowerCase() !== 'undefined';
   }catch(e){
-    // If call fails assume not registered — show register page
+    // Call reverted or failed — treat as unregistered
+    userIsRegistered = false;
+  }
+  if(!userIsRegistered){
+    // New user — show register page as gateway
     showRegisterGateway();
     startLiveROI();
     return true;
@@ -1575,30 +1584,23 @@ function showDashboardAfterRegister(){
 async function doRegister(){
   if(!userAddr){showToast('Connect wallet first',true);return;}
   const ref=document.getElementById('regRefInput').value.trim()||getDefaultReferrer();
-  const amt=parseFloat(document.getElementById('regAmt').value);
   if(!/^0x[0-9a-fA-F]{40}$/.test(ref)){showToast('Invalid referrer address',true);return;}
-  if(!amt||amt<minDepositRaw/DEC){showToast(`Min ${fmt(minDepositRaw)} deposit`,true);return;}
-  if(amt>maxDepositRaw/DEC){showToast(`Max ${fmt(maxDepositRaw,0)} deposit`,true);return;}
   const btn=document.getElementById('registerBtn');
-  btn.disabled=true;btn.textContent='⏳ Registering...';
+  btn.disabled=true;btn.textContent='⏳ Registering... (confirm in wallet)';
   try{
-    showToast('Registering on Polygon...');
-    const rtx=await contract.register(ref);await rtx.wait();
-    const amtBN=ethers.BigNumber.from(Math.floor(amt*DEC).toString());
-    const allow=await usdtContract.allowance(userAddr,CONTRACT_ADDR);
-    if(allow.lt(amtBN)){showToast('Approving USDT...');const a=await usdtContract.approve(CONTRACT_ADDR,amtBN);await a.wait();}
-    showToast('Depositing USDT...');
-    const dtx=await contract.deposit(amtBN);await dtx.wait();
-    // Show success overlay then redirect to dashboard
-    // Restore nav tabs first
+    showToast('Sending registration transaction...');
+    const rtx=await contract.register(ref);
+    showToast('Waiting for confirmation...');
+    await rtx.wait();
+    // Gas-only registration done — redirect to dashboard, activate popup will prompt deposit
     showDashboardAfterRegister();
     showRegSuccess();
     await loadDashboard();
     await loadPool();
-    activateShown=false; // reset so popup shows after success
+    activateShown=false; // popup will show to prompt $2 deposit
   }catch(e){
-    showToast(e.reason||e.message||'Failed',true);
-    btn.disabled=false;btn.textContent='🚀 Register + Activate $50 Bonus Miner';
+    showToast(e.reason||e.message||'Registration failed',true);
+    btn.disabled=false;btn.textContent='🚀 Register Free — Pay Gas Only (POL)';
   }
 }
 
