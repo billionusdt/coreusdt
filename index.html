@@ -1,0 +1,1736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CORE USDT — Polygon DeFi Platform</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#06080f;--surface:#0d1020;--card:#111526;--card2:#161a2e;
+  --border:rgba(100,120,255,0.13);--border2:rgba(168,85,247,0.25);
+  --purple:#a855f7;--cyan:#06b6d4;--pink:#ec4899;--green:#10b981;--gold:#fbbf24;
+  --text:#f0f4ff;--muted:#7a85a8;--radius:14px;--rsm:8px;
+}
+html{overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* HEADER */
+.hdr{background:rgba(13,16,32,0.97);border-bottom:1px solid var(--border);padding:0 12px 0 16px;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:100;backdrop-filter:blur(14px);overflow:hidden}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-img{width:38px;height:38px;border-radius:50%;object-fit:cover}
+.logo-txt{font-size:19px;font-weight:800;letter-spacing:.5px}
+.logo-txt .c1{color:var(--purple)}.logo-txt .c2{color:var(--cyan)}
+.nav{display:flex;gap:3px}
+.nb{padding:6px 10px;border-radius:var(--rsm);border:none;background:transparent;color:var(--muted);font-size:12px;cursor:pointer;transition:all .2s;font-weight:500;white-space:nowrap}
+.nb:hover{color:var(--text);background:rgba(168,85,247,0.1)}
+.nb.on{color:var(--purple);background:rgba(168,85,247,0.13);border:1px solid rgba(168,85,247,0.2)}
+.hdr-r{display:flex;align-items:center;gap:10px}
+.chain-b{display:flex;align-items:center;gap:5px;background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.25);padding:5px 11px;border-radius:20px;font-size:11px;color:var(--purple);font-weight:700}
+.dot-live{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.cbtn{background:linear-gradient(135deg,#a855f7,#06b6d4);border:none;color:#fff;padding:8px 18px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;transition:opacity .2s}
+.cbtn:hover{opacity:.85}
+
+/* NAV PAGES */
+.page{display:none;padding:16px;max-width:1120px;margin:0 auto;width:100%;overflow-x:hidden}
+.page.on{display:block}
+
+/* BONUS HERO BANNER */
+.bonus-hero{background:linear-gradient(135deg,rgba(168,85,247,0.18),rgba(6,182,212,0.12));border:1px solid rgba(168,85,247,0.35);border-radius:var(--radius);padding:22px 26px;margin-bottom:20px;display:flex;align-items:center;gap:20px;position:relative;overflow:hidden}
+.bonus-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:radial-gradient(circle,rgba(168,85,247,0.25),transparent 70%);pointer-events:none}
+.bonus-badge{background:linear-gradient(135deg,#a855f7,#ec4899);border-radius:50%;width:68px;height:68px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 28px rgba(168,85,247,0.5)}
+.bonus-badge-val{font-size:19px;font-weight:800;color:#fff;line-height:1}
+.bonus-badge-lab{font-size:9px;color:rgba(255,255,255,0.8);font-weight:600}
+.bonus-info h2{font-size:18px;font-weight:800;margin-bottom:4px}
+.bonus-info h2 span{color:var(--gold)}
+.bonus-info p{font-size:12px;color:var(--muted);line-height:1.5}
+.bonus-tags{display:flex;gap:7px;margin-top:9px;flex-wrap:wrap}
+.btag{padding:4px 11px;border-radius:20px;font-size:11px;font-weight:700;border:1px solid}
+.btag.g{color:var(--green);border-color:rgba(16,185,129,.35);background:rgba(16,185,129,.08)}
+.btag.p{color:var(--purple);border-color:rgba(168,85,247,.35);background:rgba(168,85,247,.08)}
+.btag.c{color:var(--cyan);border-color:rgba(6,182,212,.35);background:rgba(6,182,212,.08)}
+
+/* REFERRAL BANNER */
+.ref-banner{background:rgba(6,182,212,0.07);border:1px solid rgba(6,182,212,0.25);border-radius:var(--radius);padding:12px 14px;margin-bottom:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ref-banner-icon{font-size:22px;flex-shrink:0}
+.ref-info{flex:1}
+.ref-info label{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.7px}
+.ref-addr{font-size:13px;color:var(--cyan);font-family:monospace;font-weight:600;margin-top:3px;word-break:break-all}
+.ref-copy{background:rgba(6,182,212,0.12);border:1px solid rgba(6,182,212,0.3);color:var(--cyan);padding:6px 14px;border-radius:var(--rsm);font-size:12px;font-weight:700;cursor:pointer}
+
+/* STATS GRID */
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;position:relative;overflow:hidden;cursor:default;transition:border-color .25s}
+.sc:hover{border-color:rgba(168,85,247,0.3)}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.sc.vp::before{background:linear-gradient(90deg,#a855f7,transparent)}
+.sc.vc::before{background:linear-gradient(90deg,#06b6d4,transparent)}
+.sc.vg::before{background:linear-gradient(90deg,#10b981,transparent)}
+.sc.vk::before{background:linear-gradient(90deg,#ec4899,transparent)}
+.sc.vo::before{background:linear-gradient(90deg,#fbbf24,transparent)}
+.sc-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px;font-weight:700}
+.sc-val{font-size:22px;font-weight:800;line-height:1;margin-bottom:3px}
+.sc-val.vp{color:var(--purple)}.sc-val.vc{color:var(--cyan)}.sc-val.vg{color:var(--green)}.sc-val.vk{color:var(--pink)}.sc-val.vo{color:var(--gold)}
+.sc-sub{font-size:10px;color:var(--muted)}
+.live-tick{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-right:4px;animation:pulse 1s infinite}
+
+/* ROI LIVE TICKER */
+.roi-ticker{display:flex;align-items:baseline;gap:8px}
+.roi-main{font-size:24px;font-weight:800;color:var(--cyan);font-family:monospace}
+.roi-tick{font-size:11px;color:var(--green);font-family:monospace}
+
+/* INFO GRID */
+.ig{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px}
+.ctitle{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px}
+.rrow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(100,120,255,0.06)}
+.rrow:last-child{border-bottom:none}
+.rk{font-size:12px;color:var(--muted)}
+.rv{font-size:12px;font-weight:700;color:var(--text)}
+.rv.vp{color:var(--purple)}.rv.vc{color:var(--cyan)}.rv.vg{color:var(--green)}.rv.vo{color:var(--gold)}
+
+/* TIER PROGRESS */
+.tier-progress-wrap{margin-bottom:18px}
+.tier-bar-outer{background:rgba(255,255,255,0.05);border-radius:6px;height:8px;overflow:hidden;margin:8px 0}
+.tier-bar-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,#a855f7,#06b6d4,#10b981);transition:width .6s}
+.tier-steps{display:grid;grid-template-columns:repeat(10,1fr);gap:3px;margin-top:8px}
+.ts-item{text-align:center;padding:7px 2px;border-radius:5px;border:1px solid var(--border);background:rgba(255,255,255,0.02)}
+.ts-item.reached{background:rgba(168,85,247,0.12);border-color:rgba(168,85,247,0.3)}
+.ts-item.current{background:rgba(168,85,247,0.22);border-color:var(--purple);box-shadow:0 0 8px rgba(168,85,247,0.3)}
+.ts-name{font-size:9px;font-weight:700;color:var(--muted)}
+.ts-name.r{color:var(--purple)}
+.ts-rate{font-size:10px;font-weight:800;color:var(--purple)}
+
+/* BONUS MINER CARD */
+.bonus-card{background:var(--card);border:1px solid rgba(168,85,247,0.25);border-radius:var(--radius);padding:20px 22px;margin-bottom:18px}
+.bonus-inner{display:flex;gap:18px}
+.bonus-left{flex:1}
+.bonus-right{width:200px;display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center;border-left:1px solid var(--border);padding-left:18px}
+.mining-ring-wrap{position:relative;width:100px;height:100px}
+.mining-ring-wrap svg{transform:rotate(-90deg)}
+.mining-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.mining-pct{font-size:17px;font-weight:800;color:var(--purple)}
+.mining-sub{font-size:9px;color:var(--muted)}
+.claim-dots{display:flex;gap:5px;flex-wrap:wrap;margin:10px 0}
+.cd{width:26px;height:26px;border-radius:50%;border:2px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;transition:all .3s}
+.cd.done{background:var(--green);border-color:var(--green);color:#fff;font-size:11px}
+.cd.next{border-color:var(--purple);color:var(--purple);animation:glow 1.5s infinite}
+.cd.empty{color:var(--muted)}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(168,85,247,.4)}50%{box-shadow:0 0 0 5px rgba(168,85,247,0)}}
+.mining-left-label{font-size:12px;color:var(--muted);text-align:center}
+.mining-left-val{font-size:20px;font-weight:800;color:var(--gold);text-align:center}
+.unlock-paths{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.up-item{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:var(--rsm);padding:10px;text-align:center}
+.up-item.done{border-color:rgba(16,185,129,.4);background:rgba(16,185,129,.07)}
+.up-num{font-size:16px;font-weight:800;color:var(--purple);margin-bottom:3px}
+.up-lbl{font-size:10px;color:var(--muted)}
+
+/* ACTIONS */
+.ag{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+.ac{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;text-align:center}
+.ac-icon{font-size:24px;margin-bottom:8px}
+.ac-title{font-size:13px;font-weight:700;margin-bottom:3px}
+.ac-sub{font-size:11px;color:var(--muted);margin-bottom:12px}
+.ac-amt{font-size:20px;font-weight:800;color:var(--green);margin-bottom:4px;font-family:monospace}
+.abtn{width:100%;padding:10px;border-radius:var(--rsm);border:1px solid;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s}
+.abtn.ap{background:linear-gradient(135deg,#a855f7,#06b6d4);border-color:transparent;color:#fff}
+.abtn.ap:hover{opacity:.85}
+.abtn.as{background:transparent;border-color:rgba(168,85,247,.35);color:var(--purple)}
+.abtn.as:hover{background:rgba(168,85,247,.1)}
+.abtn.ao{background:transparent;border-color:rgba(6,182,212,.35);color:var(--cyan)}
+.abtn.ao:hover{background:rgba(6,182,212,.1)}
+
+/* POOL PAGE */
+.pool-hero{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+.leaderboard-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(100,120,255,0.06)}
+.leaderboard-row:last-child{border-bottom:none}
+.lr-rank{width:22px;text-align:center;font-size:12px;font-weight:800}
+.lr-rank.top3{color:var(--gold)}
+.lr-addr{flex:1;font-size:11px;color:var(--muted);font-family:monospace}
+.lr-pct{font-size:11px;font-weight:700;color:var(--cyan)}
+.pool-time-big{font-size:34px;font-weight:800;color:var(--purple);font-family:monospace;text-align:center;margin:10px 0}
+
+/* REGISTRATION */
+.reg-outer{max-width:560px;margin:30px auto}
+.ref-detected{background:rgba(6,182,212,0.09);border:1px solid rgba(6,182,212,.3);border-radius:var(--radius);padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.rd-icon{font-size:22px}
+.rd-label{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.7px}
+.rd-addr{font-size:13px;color:var(--cyan);font-family:monospace;font-weight:700;margin-top:2px}
+.admin-note{font-size:11px;color:var(--muted);font-style:italic;margin-top:3px}
+.bonus-reg-card{background:linear-gradient(135deg,rgba(168,85,247,0.15),rgba(6,182,212,0.08));border:1px solid rgba(168,85,247,.35);border-radius:var(--radius);padding:20px;margin-bottom:20px;text-align:center}
+.bonus-reg-card h3{font-size:20px;font-weight:800;margin-bottom:4px}
+.bonus-reg-card h3 span{color:var(--gold)}
+.bonus-reg-card p{font-size:12px;color:var(--muted);margin-bottom:12px}
+.bonus-features{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.bf{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700}
+.bf.g{background:rgba(16,185,129,.12);color:var(--green);border:1px solid rgba(16,185,129,.3)}
+.bf.p{background:rgba(168,85,247,.12);color:var(--purple);border:1px solid rgba(168,85,247,.3)}
+.bf.c{background:rgba(6,182,212,.12);color:var(--cyan);border:1px solid rgba(6,182,212,.3)}
+.rcard{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px}
+.rtitle{font-size:22px;font-weight:800;text-align:center;margin-bottom:5px}
+.rtitle span{background:linear-gradient(135deg,#a855f7,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.rsub{text-align:center;color:var(--muted);font-size:13px;margin-bottom:24px}
+.flbl{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:7px;display:block}
+.finput{width:100%;padding:11px 14px;border-radius:var(--rsm);background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text);font-size:13px;transition:border-color .2s;margin-bottom:14px}
+.finput:focus{outline:none;border-color:rgba(168,85,247,.5)}
+.finput::placeholder{color:var(--muted)}
+.fsubmit{width:100%;padding:13px;border-radius:var(--rsm);background:linear-gradient(135deg,#a855f7,#06b6d4);border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;transition:opacity .2s;margin-top:4px;letter-spacing:.3px}
+.fsubmit:hover{opacity:.85}
+.divider{height:1px;background:var(--border);margin:20px 0}
+.tier-grid10{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:6px}
+.ti{text-align:center;padding:9px 5px;border-radius:var(--rsm);background:rgba(255,255,255,0.02);border:1px solid var(--border)}
+.ti-name{font-size:9px;font-weight:700;margin-bottom:3px}
+.ti-rate{font-size:13px;font-weight:800;color:var(--purple)}
+.ti-min{font-size:9px;color:var(--muted);margin-top:2px}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(5px)}
+.modal-bg.on{display:flex}
+.modal{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);padding:26px;width:370px;max-width:92vw}
+.modal-title{font-size:16px;font-weight:800;margin-bottom:5px}
+.modal-x{float:right;background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;margin-top:-3px}
+.mrow{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(100,120,255,0.07);font-size:12px}
+.mrow:last-child{border-bottom:none}
+.mkv{font-weight:700;color:var(--text)}
+
+/* TOAST */
+.toast{position:fixed;bottom:80px;right:22px;z-index:300;background:var(--green);color:#fff;padding:11px 18px;border-radius:var(--rsm);font-size:12px;font-weight:700;opacity:0;transition:opacity .3s;pointer-events:none;max-width:280px}
+.toast.on{opacity:1}
+.toast.err{background:#ef4444}
+
+/* FOOTER */
+.footer{background:rgba(13,16,32,0.97);border-top:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-left{font-size:12px;color:var(--muted)}
+.footer-left span{color:var(--purple);font-weight:700}
+.tg-btn{display:flex;align-items:center;gap:7px;background:linear-gradient(135deg,#229ED9,#1a7fc7);border:none;color:#fff;padding:9px 18px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none}
+.tg-btn svg{width:18px;height:18px;fill:#fff}
+
+/* REFERRAL LINK BOX */
+.ref-link-box{background:rgba(168,85,247,0.07);border:1px solid rgba(168,85,247,0.25);border-radius:var(--rsm);padding:10px 14px;display:flex;align-items:center;gap:10px;margin-top:10px}
+.rl-text{flex:1;font-size:11px;color:var(--cyan);font-family:monospace;word-break:break-all}
+.rl-copy{background:rgba(168,85,247,0.15);border:1px solid rgba(168,85,247,.3);color:var(--purple);padding:5px 11px;border-radius:var(--rsm);font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
+
+/* GLOBAL STATS */
+.gs-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+
+/* ===== SPACE ANIMATIONS ===== */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes floatGlow{0%,100%{box-shadow:0 0 20px rgba(168,85,247,0.3)}50%{box-shadow:0 0 40px rgba(168,85,247,0.6),0 0 80px rgba(6,182,212,0.2)}}
+@keyframes borderPulse{0%,100%{border-color:rgba(168,85,247,0.25)}50%{border-color:rgba(168,85,247,0.6)}}
+@keyframes orbit{from{transform:rotate(0deg) translateX(55px) rotate(0deg)}to{transform:rotate(360deg) translateX(55px) rotate(-360deg)}}
+@keyframes rocketFly{0%{transform:translate(-10vw,100vh) rotate(-45deg);opacity:0}15%{opacity:1}85%{opacity:1}100%{transform:translate(110vw,-60vh) rotate(-45deg);opacity:0}}
+@keyframes starTwinkle{0%,100%{opacity:.15;transform:scale(1)}50%{opacity:.7;transform:scale(1.3)}}
+@keyframes drift{0%{transform:translateX(0) translateY(0)}25%{transform:translateX(6px) translateY(-8px)}50%{transform:translateX(-4px) translateY(-14px)}75%{transform:translateX(8px) translateY(-6px)}100%{transform:translateX(0) translateY(0)}}
+@keyframes astronautFloat{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(-12px) rotate(8deg)}}
+@keyframes glowPulse{0%,100%{opacity:.4}50%{opacity:1}}
+@keyframes countUp{from{opacity:0;transform:scale(0.85)}to{opacity:1;transform:scale(1)}}
+@keyframes slideDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{0%{opacity:0;transform:scale(.5)}70%{transform:scale(1.08)}100%{opacity:1;transform:scale(1)}}
+@keyframes scanline{0%{top:-100%}100%{top:100%}}
+@keyframes coinFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-8px) rotate(15deg)}}
+
+/* SPACE BACKGROUND CANVAS */
+#spaceBg{position:fixed;inset:0;z-index:0;pointer-events:none}
+#app{position:relative;z-index:1}
+
+/* FLOATING ASTRONAUT */
+.astro-wrap{position:fixed;right:16px;bottom:90px;z-index:2;pointer-events:none;animation:astronautFloat 4s ease-in-out infinite}
+.astro-emoji{font-size:28px;filter:drop-shadow(0 0 8px rgba(168,85,247,0.6))}
+
+/* ROCKET ELEMENTS */
+.rocket-wrap{position:fixed;z-index:2;pointer-events:none;animation:rocketFly linear infinite}
+
+/* PAGE TRANSITIONS */
+.page.on{animation:fadeInUp .35s ease both}
+
+/* CARD HOVER EFFECTS */
+.sc{transition:transform .2s,border-color .25s,box-shadow .2s;position:relative;overflow:hidden}
+.sc:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(168,85,247,0.15)}
+.ac{transition:transform .2s,border-color .25s,box-shadow .2s}
+.ac:hover{transform:translateY(-2px);border-color:rgba(168,85,247,0.4);box-shadow:0 8px 24px rgba(168,85,247,0.12)}
+.bonus-card{animation:borderPulse 3s infinite;background:linear-gradient(135deg,rgba(17,21,38,0.98),rgba(22,26,46,0.95))}
+.mining-ring-wrap{animation:floatGlow 3s ease-in-out infinite}
+.roi-main{animation:countUp .4s ease}
+.card{transition:box-shadow .2s}
+.card:hover{box-shadow:0 4px 24px rgba(100,120,255,0.1)}
+
+/* BUTTON STYLES */
+.abtn.ap{background:linear-gradient(135deg,#a855f7,#06b6d4);border-color:transparent;color:#fff;transition:all .3s}
+.abtn.ap:hover{transform:scale(1.02);box-shadow:0 4px 20px rgba(168,85,247,0.45)}
+.fsubmit{background:linear-gradient(135deg,#a855f7,#06b6d4);transition:all .3s}
+.fsubmit:hover{box-shadow:0 4px 20px rgba(168,85,247,0.4)}
+.cbtn{background:linear-gradient(135deg,#a855f7,#06b6d4);transition:all .3s}
+.cbtn:hover{box-shadow:0 4px 16px rgba(168,85,247,0.4);opacity:1}
+
+/* HEADER ENHANCED */
+.hdr{box-shadow:0 1px 30px rgba(0,0,0,0.6)}
+.logo-txt .c1{background:linear-gradient(135deg,#a855f7,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.logo-txt .c2{background:linear-gradient(135deg,#06b6d4,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+/* IOI TOTAL EARNINGS */
+.ioi-total-card{background:linear-gradient(135deg,rgba(168,85,247,0.15),rgba(6,182,212,0.08));border:1px solid rgba(168,85,247,0.4);border-radius:var(--radius);padding:18px 20px;margin-bottom:14px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.ioi-total-left{flex:1;min-width:140px}
+.ioi-total-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;font-weight:700;margin-bottom:6px}
+.ioi-total-val{font-size:28px;font-weight:800;color:var(--purple);font-family:monospace;line-height:1;animation:coinFloat 3s ease-in-out infinite}
+.ioi-total-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.ioi-total-right{display:flex;gap:10px;flex-wrap:wrap}
+.ioi-stat-pill{text-align:center;padding:8px 14px;border-radius:10px;border:1px solid}
+.ioi-stat-pill.p{background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.3);color:var(--purple)}
+.ioi-stat-pill.c{background:rgba(6,182,212,.1);border-color:rgba(6,182,212,.3);color:var(--cyan)}
+.ioi-stat-pill.g{background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--green)}
+.ioi-stat-val{font-size:16px;font-weight:800;line-height:1}
+.ioi-stat-lbl{font-size:9px;margin-top:2px;opacity:.7;font-weight:700}
+
+/* ACTIVATE POPUP */
+.activate-popup{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:400;display:none;align-items:center;justify-content:center;backdrop-filter:blur(10px);padding:16px}
+.activate-popup.on{display:flex}
+.activate-box{background:linear-gradient(135deg,#0d1020,#161a2e);border:1px solid rgba(168,85,247,.6);border-radius:20px;padding:32px 28px;text-align:center;max-width:380px;width:100%;animation:popIn .4s ease both;box-shadow:0 0 80px rgba(168,85,247,.3),0 0 160px rgba(6,182,212,.1);position:relative;overflow:hidden}
+.activate-box::before{content:'';position:absolute;top:0;left:-100%;width:60%;height:2px;background:linear-gradient(90deg,transparent,#a855f7,transparent);animation:scanline 2s linear infinite}
+.activate-orbit{position:relative;width:90px;height:90px;margin:0 auto 20px}
+.activate-planet{width:54px;height:54px;background:linear-gradient(135deg,#a855f7,#06b6d4);border-radius:50%;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 0 30px rgba(168,85,247,.5)}
+.activate-moon{width:14px;height:14px;background:var(--gold);border-radius:50%;position:absolute;top:50%;left:50%;transform-origin:0 0;animation:orbit 3s linear infinite;box-shadow:0 0 8px var(--gold)}
+
+/* RESPONSIVE - FULL MOBILE SUPPORT */
+@media(max-width:520px){
+  .hdr{padding:0 10px 0 12px}
+  .logo-txt{font-size:16px}
+  .logo-img{width:30px;height:30px}
+  .chain-b{display:none}
+  .cbtn{padding:7px 12px;font-size:11px}
+  .nb{padding:5px 8px;font-size:11px}
+  .page{padding:12px}
+  .sg{grid-template-columns:1fr 1fr;gap:8px}
+  .ag{grid-template-columns:1fr;gap:10px}
+  .ig{grid-template-columns:1fr;gap:10px}
+  .bonus-inner{flex-direction:column}
+  .bonus-right{width:100%;border-left:none;border-top:1px solid var(--border);padding-left:0;padding-top:14px}
+  .pool-hero{grid-template-columns:1fr}
+  .tier-steps{grid-template-columns:repeat(5,1fr)}
+  .gs-row{grid-template-columns:1fr}
+  .unlock-paths{grid-template-columns:1fr}
+  .ref-banner{flex-direction:column;align-items:flex-start}
+  .ref-link-box{margin-top:8px!important;max-width:100%!important;width:100%}
+  .sc-val{font-size:18px}
+  .roi-main{font-size:18px}
+  .ioi-total-card{flex-direction:column}
+  .ioi-total-right{width:100%;justify-content:space-between}
+  .tier-grid10{grid-template-columns:repeat(2,1fr)}
+  .bonus-card{padding:14px}
+  .card{padding:14px 16px}
+  .rcard{padding:20px 16px}
+  .reg-outer{margin:16px auto}
+  .ac{padding:14px}
+  .modal{padding:20px 16px}
+}
+@media(min-width:521px) and (max-width:768px){
+  .sg{grid-template-columns:repeat(2,1fr)}
+  .ig{grid-template-columns:1fr}
+  .ag{grid-template-columns:1fr}
+  .pool-hero{grid-template-columns:1fr}
+  .gs-row{grid-template-columns:1fr 1fr}
+  .tier-steps{grid-template-columns:repeat(5,1fr)}
+  .tier-grid10{grid-template-columns:repeat(3,1fr)}
+  .bonus-inner{flex-direction:column}
+  .bonus-right{width:100%;border-left:none;border-top:1px solid var(--border);padding-left:0;padding-top:14px}
+  .unlock-paths{grid-template-columns:repeat(3,1fr)}
+}
+/* Make all text non-overflow */
+.sc-val,.roi-main,.ioi-total-val{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.ref-addr,.rl-text{overflow-wrap:break-word;word-break:break-all}
+input[type=number]{-moz-appearance:textfield;appearance:textfield}
+</style>
+</head>
+<body>
+
+<!-- SPACE BACKGROUND -->
+<canvas id="spaceBg"></canvas>
+
+<!-- FLOATING ASTRONAUT -->
+<div class="astro-wrap" id="astroWrap">
+  <div class="astro-emoji">👨‍🚀</div>
+</div>
+
+<!-- ACTIVATE ROI POPUP -->
+<div class="activate-popup" id="activatePopup">
+  <div class="activate-box">
+    <div class="activate-orbit">
+      <div class="activate-planet">🚀</div>
+      <div class="activate-moon"></div>
+    </div>
+    <div style="font-size:22px;font-weight:800;margin-bottom:8px;background:linear-gradient(135deg,#a855f7,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Activate Your Account!</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:6px;line-height:1.6">Your $50 Bonus Miner is active.<br>Now make a <strong style="color:var(--gold)">minimum $2 deposit</strong> to activate <strong style="color:var(--green)">1.5% daily ROI</strong> and start earning!</div>
+    <div style="display:flex;gap:8px;justify-content:center;margin:16px 0;flex-wrap:wrap">
+      <div style="background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);border-radius:10px;padding:10px 16px;text-align:center">
+        <div style="font-size:20px;font-weight:800;color:var(--green)">1.5%</div>
+        <div style="font-size:10px;color:var(--muted);font-weight:700">Daily ROI</div>
+      </div>
+      <div style="background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.3);border-radius:10px;padding:10px 16px;text-align:center">
+        <div style="font-size:20px;font-weight:800;color:var(--purple)">$2</div>
+        <div style="font-size:10px;color:var(--muted);font-weight:700">Min Deposit</div>
+      </div>
+      <div style="background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);border-radius:10px;padding:10px 16px;text-align:center">
+        <div style="font-size:20px;font-weight:800;color:var(--gold)">$50</div>
+        <div style="font-size:10px;color:var(--muted);font-weight:700">Free Miner</div>
+      </div>
+    </div>
+    <button id="activateDepBtn" style="width:100%;padding:13px;border-radius:12px;background:linear-gradient(135deg,#a855f7,#06b6d4);border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;margin-bottom:10px;letter-spacing:.3px">🚀 Deposit Now &amp; Activate 1.5% ROI</button>
+    <button id="activateLaterBtn" style="width:100%;padding:10px;border-radius:12px;background:transparent;border:1px solid rgba(255,255,255,.1);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer">Maybe Later</button>
+  </div>
+</div>
+
+<div id="app">
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="logo">
+    <img class="logo-img" src="./IMG_20260415_134358.png" alt="Core USDT" onerror="this.style.display='none'">
+    <div class="logo-txt"><span class="c1">CORE</span><span class="c2"> USDT</span></div>
+  </div>
+  <nav class="nav">
+    <button class="nb on" data-page="dash">Dashboard</button>
+    <button class="nb" data-page="pool">Pool</button>
+  </nav>
+  <div class="hdr-r">
+    <div class="chain-b"><div class="dot-live"></div>Polygon</div>
+    <button class="cbtn" id="connBtn" type="button">Connect Wallet</button>
+  </div>
+</header>
+
+<!-- DASHBOARD -->
+<div class="page on" id="page-dash">
+
+  <!-- $50 BONUS MINER — BELOW HEADER (moved to top) -->
+  <div class="bonus-card" id="bonusMinerSection" style="margin-bottom:18px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div>
+        <div class="ctitle" style="margin-bottom:0">$50 Free Bonus Miner</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:3px">Mining 0.5%/day · Claim $5 every 24h after unlock</div>
+      </div>
+      <div id="bonusHeroBadge" style="padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700;background:rgba(251,191,36,0.12);color:var(--gold);border:1px solid rgba(251,191,36,0.3)">Locked</div>
+    </div>
+    <div class="bonus-inner">
+      <div class="bonus-left">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:4px">
+          <span>Mined so far</span><span id="bonusMinedText">$0.00 / $50.00</span>
+        </div>
+        <!-- Live bonus ROI ticker -->
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px">
+          <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;font-weight:700"><span class="live-tick"></span>Live Mining</span>
+          <span style="font-size:18px;font-weight:800;color:var(--gold);font-family:monospace" id="bonusLiveROI">$0.000000</span>
+        </div>
+        <div style="background:rgba(255,255,255,0.05);border-radius:6px;height:10px;overflow:hidden;margin-bottom:12px;position:relative">
+          <div id="bonusMinerFill" style="height:100%;border-radius:6px;background:linear-gradient(90deg,#a855f7,#fbbf24);width:0%;transition:width .5s"></div>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:8px;font-weight:600">Claim progress ($5 each)</div>
+        <div class="claim-dots" id="claimDots"></div>
+        <div style="font-size:10px;color:var(--muted);margin-top:6px">Remaining: <strong id="bonusRemLeft" style="color:var(--gold)">$50.00 left to mine</strong></div>
+
+        <div class="unlock-paths" style="margin-top:16px">
+          <div class="up-item" id="up1">
+            <div class="up-num">200</div>
+            <div class="up-lbl">Days passive<br>mining</div>
+          </div>
+          <div class="up-item" id="up2">
+            <div class="up-num">10</div>
+            <div class="up-lbl">Direct refs<br>+ $50 deposit</div>
+          </div>
+          <div class="up-item" id="up3">
+            <div class="up-num">$1K</div>
+            <div class="up-lbl">Direct vol<br>+ $40 deposit</div>
+          </div>
+        </div>
+      </div>
+      <div class="bonus-right">
+        <div class="mining-ring-wrap">
+          <svg width="100" height="100" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
+            <circle cx="50" cy="50" r="40" fill="none" stroke="url(#bg1)" stroke-width="8" stroke-linecap="round" id="miningArc" stroke-dasharray="251.2" stroke-dashoffset="251.2"/>
+            <defs><linearGradient id="bg1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#fbbf24"/></linearGradient></defs>
+          </svg>
+          <div class="mining-center">
+            <div class="mining-pct" id="miningPct">0%</div>
+            <div class="mining-sub">mined</div>
+          </div>
+        </div>
+        <div class="mining-left-label">Remaining to mine</div>
+        <div class="mining-left-val" id="bonusRemAmt">$50.00</div>
+        <div style="font-size:11px;color:var(--muted);text-align:center">Claims left</div>
+        <div style="font-size:26px;font-weight:800;color:var(--purple);text-align:center" id="claimsLeft">10</div>
+        <button class="abtn ap" style="width:100%" id="claimBonusBtn" type="button">Claim $5 Bonus</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- REFERRAL BANNER -->
+  <div class="ref-banner" id="refBanner">
+    <div class="ref-banner-icon">🔗</div>
+    <div class="ref-info">
+      <label>Your Upline (Referrer)</label>
+      <div class="ref-addr" id="refAddrShow">Connect wallet to detect referral</div>
+    </div>
+    <div class="ref-link-box" style="margin-top:0;flex-shrink:0;max-width:260px">
+      <span class="rl-text" id="myRefLink">Your referral link appears here</span>
+      <button class="rl-copy" id="copyRefTopBtn" type="button">Copy</button>
+    </div>
+  </div>
+
+  <!-- ACTION CARDS — moved here, below referral -->
+  <div class="ag">
+    <div class="ac">
+      <div class="ac-icon">💸</div>
+      <div class="ac-title">Withdraw ROI</div>
+      <div class="ac-amt" id="wdAmt">$0.000000</div>
+      <div class="ac-sub">5% fee · net to wallet</div>
+      <button class="abtn ap" id="withdrawBtn" type="button">Withdraw Now</button>
+    </div>
+    <div class="ac">
+      <div class="ac-icon">🔄</div>
+      <div class="ac-title">Compound ROI</div>
+      <div class="ac-amt" id="cpAmt">$0.000000</div>
+      <button class="abtn as" id="compoundBtn" type="button">Compound</button>
+    </div>
+    <div class="ac">
+      <div class="ac-icon">➕</div>
+      <div class="ac-title">New Deposit</div>
+      <div class="ac-sub">Min $2 · Max $50,000</div>
+      <input type="number" id="depInput" placeholder="USDT amount" class="finput" style="margin-bottom:8px;font-size:13px">
+      <button class="abtn ao" id="depositBtn" type="button">Deposit USDT</button>
+    </div>
+  </div>
+
+  <!-- PERSONAL STATS -->
+  <div class="sg">
+    <div class="sc vp">
+      <div class="sc-lbl">Active Deposit</div>
+      <div class="sc-val vp" id="sDeposit">$0.00</div>
+      <div class="sc-sub" id="sTier">Connect wallet</div>
+    </div>
+    <div class="sc vc">
+      <div class="sc-lbl"><span class="live-tick"></span>Pending ROI (Live)</div>
+      <div class="roi-ticker">
+        <div class="roi-main" id="sROI">$0.000000</div>
+      </div>
+      <div class="sc-sub" id="sRate">Rate: — / sec</div>
+    </div>
+    <div class="sc vg">
+      <div class="sc-lbl">Total Withdrawn</div>
+      <div class="sc-val vg" id="sWithdrawn">$0.00</div>
+      <div class="sc-sub" id="sCap">Cap: —</div>
+    </div>
+    <div class="sc vk">
+      <div class="sc-lbl">Team Business</div>
+      <div class="sc-val vk" id="sTeam">$0.00</div>
+      <div class="sc-sub" id="sTeamSz">Team: 0 members</div>
+    </div>
+  </div>
+
+  <!-- TIER PROGRESS -->
+  <div class="card tier-progress-wrap">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div class="ctitle" style="margin-bottom:0">Tier Progress</div>
+      <div id="currentTierBadge" style="font-size:12px;font-weight:700;color:var(--purple)">—</div>
+    </div>
+    <div class="tier-bar-outer"><div class="tier-bar-fill" id="tierFill" style="width:0%"></div></div>
+    <div class="tier-steps" id="tierSteps"></div>
+    <div style="margin-top:10px;display:flex;gap:16px;font-size:11px;color:var(--muted)">
+      <span>Current deposit: <strong id="tierCurrDep" style="color:var(--text)">$0</strong></span>
+      <span>Next tier at: <strong id="tierNextAt" style="color:var(--cyan)">—</strong></span>
+      <span>Need: <strong id="tierNeed" style="color:var(--gold)">—</strong></span>
+    </div>
+  </div>
+
+  <!-- INFO + ROI PROGRESS -->
+  <div class="ig">
+    <div class="card">
+      <div class="ctitle">Account Info</div>
+      <div class="rrow"><span class="rk">Wallet</span><span class="rv" id="iWallet">—</span></div>
+      <div class="rrow"><span class="rk">Referrer</span><span class="rv vc" id="iRef">—</span></div>
+      <div class="rrow"><span class="rk">Direct Refs</span><span class="rv vp" id="iDRef">—</span></div>
+      <div class="rrow"><span class="rk">Direct Business</span><span class="rv vg" id="iDBiz">—</span></div>
+      <div class="rrow"><span class="rk">Team Size</span><span class="rv" id="iTeamSz">—</span></div>
+      <div class="rrow"><span class="rk">Bonus Status</span><span class="rv vo" id="iBonusSt">—</span></div>
+      <div style="margin-top:12px">
+        <div class="ref-link-box">
+          <span class="rl-text" id="myRefLink2">Connect to get your link</span>
+          <button class="rl-copy" id="copyRefCardBtn" type="button">Copy Link</button>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ctitle">ROI Cap Progress</div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:6px">
+        <span>Withdrawn: <strong id="capWith" style="color:var(--text)">$0</strong></span>
+        <span>Cap: <strong id="capTotal" style="color:var(--cyan)">—</strong></span>
+      </div>
+      <div style="background:rgba(255,255,255,0.05);border-radius:6px;height:8px;overflow:hidden;margin-bottom:14px">
+        <div id="roiCapFill" style="height:100%;border-radius:6px;background:linear-gradient(90deg,#a855f7,#06b6d4);width:0%;transition:width .5s"></div>
+      </div>
+      <div class="rrow"><span class="rk">Daily Rate</span><span class="rv vp" id="iDRate">—</span></div>
+      <div class="rrow"><span class="rk">Per Second</span><span class="rv vg" id="iPerSec">—</span></div>
+      <div class="rrow"><span class="rk">Total Cap</span><span class="rv vc" id="iCap">—</span></div>
+      <div class="rrow"><span class="rk">Remaining to Cap</span><span class="rv vg" id="iRemCap">—</span></div>
+      <div class="rrow"><span class="rk">Days to Cap</span><span class="rv vo" id="iDaysToCap">—</span></div>
+    </div>
+  </div>
+
+  <!-- REFERRAL COMMISSION + INCOME-ON-INCOME -->
+  <div class="card" style="margin-bottom:18px">
+    <div class="ctitle">Referral Commission Structure</div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;text-align:center;margin-bottom:16px">
+      <div><div style="font-size:10px;color:var(--muted);margin-bottom:5px">Level 1</div><div style="font-size:22px;font-weight:800;color:var(--purple)">5%</div><div style="font-size:10px;color:var(--muted)">Direct</div></div>
+      <div><div style="font-size:10px;color:var(--muted);margin-bottom:5px">Level 2</div><div style="font-size:22px;font-weight:800;color:var(--cyan)">1%</div></div>
+      <div><div style="font-size:10px;color:var(--muted);margin-bottom:5px">Level 3</div><div style="font-size:22px;font-weight:800;color:var(--cyan)">1%</div></div>
+      <div><div style="font-size:10px;color:var(--muted);margin-bottom:5px">Level 4</div><div style="font-size:22px;font-weight:800;color:var(--muted)">0.5%</div></div>
+      <div><div style="font-size:10px;color:var(--muted);margin-bottom:5px">Level 5</div><div style="font-size:22px;font-weight:800;color:var(--muted)">0.5%</div></div>
+    </div>
+
+    <div style="border-top:1px solid var(--border);padding-top:16px">
+      <!-- IoI TOTAL EARNINGS CARD -->
+      <div class="ioi-total-card">
+        <div class="ioi-total-left">
+          <div class="ioi-total-lbl"><span class="live-tick"></span>Total IoI Earnings</div>
+          <div class="ioi-total-val" id="ioiTotalEarned">$0.00</div>
+          <div class="ioi-total-sub">Earned from team's ROI activity</div>
+        </div>
+        <div class="ioi-total-right">
+          <div class="ioi-stat-pill p">
+            <div class="ioi-stat-val" id="ioiTeamActive">0</div>
+            <div class="ioi-stat-lbl">Active Team</div>
+          </div>
+          <div class="ioi-stat-pill c">
+            <div class="ioi-stat-val" id="ioiLevelsActive">—</div>
+            <div class="ioi-stat-lbl">Levels Deep</div>
+          </div>
+          <div class="ioi-stat-pill g">
+            <div class="ioi-stat-val" id="ioiDailyEst">$0</div>
+            <div class="ioi-stat-lbl">Est. Daily</div>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px">⚡ Income-on-Income Matching — 10 Levels</div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:8px">
+        <div class="ioi-item" style="background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.3);border-radius:8px;padding:10px 6px;text-align:center">
+          <div style="font-size:9px;color:var(--muted);margin-bottom:4px;font-weight:700">L1</div>
+          <div style="font-size:18px;font-weight:800;color:var(--purple)">10%</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:3px">on your L1's ROI</div>
+        </div>
+        <div class="ioi-item" style="background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.2);border-radius:8px;padding:10px 6px;text-align:center">
+          <div style="font-size:9px;color:var(--muted);margin-bottom:4px;font-weight:700">L2</div>
+          <div style="font-size:18px;font-weight:800;color:var(--cyan)">5%</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:3px">on L2 ROI</div>
+        </div>
+        <div class="ioi-item" style="background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.2);border-radius:8px;padding:10px 6px;text-align:center">
+          <div style="font-size:9px;color:var(--muted);margin-bottom:4px;font-weight:700">L3</div>
+          <div style="font-size:18px;font-weight:800;color:var(--cyan)">5%</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:3px">on L3 ROI</div>
+        </div>
+        <div class="ioi-item" style="background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.2);border-radius:8px;padding:10px 6px;text-align:center">
+          <div style="font-size:9px;color:var(--muted);margin-bottom:4px;font-weight:700">L4</div>
+          <div style="font-size:18px;font-weight:800;color:var(--cyan)">5%</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:3px">on L4 ROI</div>
+        </div>
+        <div class="ioi-item" style="background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.2);border-radius:8px;padding:10px 6px;text-align:center">
+          <div style="font-size:9px;color:var(--muted);margin-bottom:4px;font-weight:700">L5</div>
+          <div style="font-size:18px;font-weight:800;color:var(--cyan)">5%</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:3px">on L5 ROI</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px">
+        <div class="ioi-item" style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:10px 6px;text-align:center">
+          <div style="font-size:9px;color:var(--muted);margin-bottom:4px;font-weight:700">L6</div>
+          <div style="font-size:18px;font-weight:800;color:var(--muted)">2%</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:3px">on L6 ROI</div>
+        </div>
+        <div class="ioi-item" style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:10px 6px;text-align:center">
+          <div style="font-size:9px;color:var(--muted);margin-bottom:4px;font-weight:700">L7</div>
+          <div style="font-size:18px;font-weight:800;color:var(--muted)">2%</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:3px">on L7 ROI</div>
+        </div>
+        <div class="ioi-item" style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:10px 6px;text-align:center">
+          <div style="font-size:9px;color:var(--muted);margin-bottom:4px;font-weight:700">L8</div>
+          <div style="font-size:18px;font-weight:800;color:var(--muted)">2%</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:3px">on L8 ROI</div>
+        </div>
+        <div class="ioi-item" style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:10px 6px;text-align:center">
+          <div style="font-size:9px;color:var(--muted);margin-bottom:4px;font-weight:700">L9</div>
+          <div style="font-size:18px;font-weight:800;color:var(--muted)">2%</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:3px">on L9 ROI</div>
+        </div>
+        <div class="ioi-item" style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:10px 6px;text-align:center">
+          <div style="font-size:9px;color:var(--muted);margin-bottom:4px;font-weight:700">L10</div>
+          <div style="font-size:18px;font-weight:800;color:var(--muted)">2%</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:3px">on L10 ROI</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- REGISTER PAGE -->
+<div class="page" id="page-reg">
+  <div class="reg-outer">
+
+    <!-- $50 BONUS HIGHLIGHT -->
+    <div class="bonus-reg-card">
+      <div style="font-size:40px;margin-bottom:8px">🎁</div>
+      <h3>Get <span>$50 FREE</span> Just for Joining!</h3>
+      <p>Register today and automatically receive a $50 bonus miner. No extra investment needed — mine $0.25/day and claim $5 every 24 hours after unlock.</p>
+      <div class="bonus-features">
+        <span class="bf g">$5 × 10 Claims</span>
+        <span class="bf p">Auto-Unlock Paths</span>
+        <span class="bf c">200-Day Miner</span>
+      </div>
+    </div>
+
+    <!-- REFERRAL DETECTED -->
+    <div class="ref-detected" id="regRefDetected">
+      <div class="rd-icon">🔗</div>
+      <div>
+        <div class="rd-label">Referred by</div>
+        <div class="rd-addr" id="regRefShow">Detecting from URL...</div>
+        <div class="admin-note" id="regAdminNote"></div>
+      </div>
+    </div>
+
+    <div class="rcard">
+      <div class="rtitle"><span>Register & Join</span></div>
+      <div class="rsub">One-click registration on Polygon · Instant $50 bonus miner activated</div>
+
+      <label class="flbl">Referrer Address (auto-detected from link)</label>
+      <input class="finput" id="regRefInput" placeholder="0x... referrer wallet address" readonly style="opacity:.7;cursor:not-allowed">
+
+      <label class="flbl">First Deposit Amount (USDT)</label>
+      <input class="finput" type="number" id="regAmt" placeholder="Min $2 — Max $50,000">
+
+      <button class="fsubmit" id="registerBtn" type="button">🚀 Register + Activate $50 Bonus Miner</button>
+
+      <div class="divider"></div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px">10 ROI Tiers</div>
+      <div class="tier-grid10">
+        <div class="ti"><div class="ti-name" style="color:#a855f7">Starter</div><div class="ti-rate">1.2%</div><div class="ti-min">&lt;$100</div></div>
+        <div class="ti"><div class="ti-name" style="color:#a855f7">Basic</div><div class="ti-rate">1.4%</div><div class="ti-min">$100+</div></div>
+        <div class="ti"><div class="ti-name" style="color:#06b6d4">Bronze</div><div class="ti-rate">1.6%</div><div class="ti-min">$250+</div></div>
+        <div class="ti"><div class="ti-name" style="color:#06b6d4">Silver</div><div class="ti-rate">1.8%</div><div class="ti-min">$500+</div></div>
+        <div class="ti"><div class="ti-name" style="color:#10b981">Gold</div><div class="ti-rate">2.2%</div><div class="ti-min">$1K+</div></div>
+        <div class="ti"><div class="ti-name" style="color:#10b981">Platinum</div><div class="ti-rate">2.5%</div><div class="ti-min">$2.5K+</div></div>
+        <div class="ti"><div class="ti-name" style="color:#fbbf24">Diamond</div><div class="ti-rate">2.8%</div><div class="ti-min">$5K+</div></div>
+        <div class="ti"><div class="ti-name" style="color:#fbbf24">Whale</div><div class="ti-rate">3.0%</div><div class="ti-min">$10K+</div></div>
+        <div class="ti"><div class="ti-name" style="color:#ec4899">Elite</div><div class="ti-rate">3.3%</div><div class="ti-min">$20K+</div></div>
+        <div class="ti"><div class="ti-name" style="color:#ec4899">Master</div><div class="ti-rate">3.5%</div><div class="ti-min">$40K+</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- POOL PAGE -->
+<div class="page" id="page-pool">
+  <div class="pool-hero">
+    <div class="card">
+      <div class="ctitle">10-Day Leadership Pool</div>
+      <div style="text-align:center;margin:10px 0">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px">Current Pool Balance</div>
+        <div style="font-size:30px;font-weight:800;color:var(--green)" id="poolBal">$0.00</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px">3% of all deposits this cycle</div>
+      </div>
+      <div class="pool-time-big" id="poolTimer">—</div>
+      <div style="font-size:11px;color:var(--muted);text-align:center;margin-bottom:14px">Time remaining in cycle <span id="cycleNum" style="color:var(--purple);font-weight:700">#1</span></div>
+      <div class="rrow"><span class="rk">Cycle start</span><span class="rv" id="cycleStart">—</span></div>
+      <div class="rrow"><span class="rk">Cycle end</span><span class="rv" id="cycleEnd">—</span></div>
+      <div class="rrow"><span class="rk">Status</span><span class="rv vg" id="cycleStatus">—</span></div>
+      <button class="abtn ap" style="width:100%;margin-top:14px" id="claimPoolBtn" type="button">Claim Pool Share</button>
+    </div>
+    <div class="card">
+      <div class="ctitle">Top 10 Leaderboard</div>
+      <div id="leaderboard"><div style="color:var(--muted);font-size:12px;text-align:center;padding:20px">Connect wallet to load leaderboard</div></div>
+      <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:7px;font-weight:700;text-transform:uppercase;letter-spacing:.7px">Prize Distribution</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">
+          <span style="font-size:10px;padding:3px 8px;border-radius:20px;background:rgba(251,191,36,.1);color:var(--gold);border:1px solid rgba(251,191,36,.2)">#1: 25%</span>
+          <span style="font-size:10px;padding:3px 8px;border-radius:20px;background:rgba(251,191,36,.08);color:var(--gold);border:1px solid rgba(251,191,36,.15)">#2: 18%</span>
+          <span style="font-size:10px;padding:3px 8px;border-radius:20px;background:rgba(251,191,36,.06);color:var(--gold);border:1px solid rgba(251,191,36,.1)">#3: 15%</span>
+          <span style="font-size:10px;padding:3px 8px;border-radius:20px;background:rgba(255,255,255,.04);color:var(--muted);border:1px solid var(--border)">#4: 12%  #5: 10%  #6: 7%  #7: 5%  #8: 4%  #9-10: 2%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <button class="modal-x" id="modalCloseBtn" type="button">&#x2715;</button>
+    <div class="modal-title" id="modalTitle">Confirm Transaction</div>
+    <div style="font-size:12px;color:var(--muted);margin:5px 0 16px">Review details below and confirm in MetaMask.</div>
+    <div style="background:rgba(255,255,255,.03);border-radius:8px;padding:12px;margin-bottom:16px">
+      <div class="mrow"><span style="color:var(--muted)">Action</span><span class="mkv" id="mAction">—</span></div>
+      <div class="mrow"><span style="color:var(--muted)">Amount</span><span class="mkv vg" id="mAmount">—</span></div>
+      <div class="mrow"><span style="color:var(--muted)">Network</span><span class="mkv">Polygon Mainnet</span></div>
+      <div class="mrow"><span style="color:var(--muted)">Contract</span><span class="mkv" style="font-size:10px;font-family:monospace">0xe88e6ad...bc30</span></div>
+    </div>
+    <button class="fsubmit" id="mConfBtn" type="button">Confirm Transaction</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<!-- Hidden elements kept for JS compatibility -->
+<span id="gTotalDep" style="display:none"></span>
+<span id="gTotalUsers" style="display:none"></span>
+<span id="gContractBal" style="display:none"></span>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-left">
+    <span>CORE USDT</span> · Polygon Mainnet
+  </div>
+  <a class="tg-btn" href="https://t.me/coreusdten" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+    Join Telegram Community
+  </a>
+</footer>
+
+</div>
+
+<script>
+const CONTRACT_ADDR = '0xe88e6ad0433354bcd2c3426ce38528a51142bc30';
+const USDT_ADDR = '0xc2132D05D31c914a87C6611C10748AEb04B58e8F';
+const ZERO_ADDR = '0x0000000000000000000000000000000000000000';
+const POLYGON_RPC = 'https://polygon-rpc.com/';
+const POLYGON_RPCS = [
+  'https://polygon-rpc.com/',
+  'https://polygon-bor-rpc.publicnode.com',
+  'https://1rpc.io/matic',
+  'https://rpc.ankr.com/polygon'
+];
+const DEC = 1e6;
+
+const ABI = [
+  'function MIN_DEPOSIT() view returns (uint256)',
+  'function MAX_DEPOSIT() view returns (uint256)',
+  'function BONUS_AMOUNT() view returns (uint256)',
+  'function BONUS_CLAIM_AMT() view returns (uint256)',
+  'function BONUS_CLAIMS_MAX() view returns (uint256)',
+  'function adminWallet() view returns (address)',
+  'function rootWallet() view returns (address)',
+  'function getPoolInfo() view returns (uint256,uint256,uint256,uint256,bool,address[10],uint256[10])',
+  'function getUserInfo(address) view returns (address,uint256,uint256,uint256,uint256,uint256,uint256,bool,bool)',
+  'function getUserNetwork(address) view returns (uint256,uint256,uint256,uint256,string,uint256,uint256)',
+  'function canClaimPool(address) view returns (bool,uint8)',
+  'function nextBonusClaimIn(address) view returns (uint256)',
+  'function contractBalance() view returns (uint256)',
+  'function totalDeposits() view returns (uint256)',
+  'function totalUsers() view returns (uint256)',
+  'function register(address) external',
+  'function deposit(uint256) external',
+  'function withdraw() external',
+  'function compound() external',
+  'function claimBonus() external',
+  'function claimLeaderPoolShare() external',
+];
+const USDT_ABI = [
+  'function approve(address,uint256) external returns (bool)',
+  'function allowance(address,address) view returns (uint256)'
+];
+
+const TIERS = [
+  {name:'Starter',min:0,rate:1.2,cap:200,color:'#a855f7'},
+  {name:'Basic',min:100,rate:1.4,cap:200,color:'#a855f7'},
+  {name:'Bronze',min:250,rate:1.6,cap:210,color:'#06b6d4'},
+  {name:'Silver',min:500,rate:1.8,cap:220,color:'#06b6d4'},
+  {name:'Gold',min:1000,rate:2.2,cap:230,color:'#10b981'},
+  {name:'Platinum',min:2500,rate:2.5,cap:250,color:'#10b981'},
+  {name:'Diamond',min:5000,rate:2.8,cap:275,color:'#fbbf24'},
+  {name:'Whale',min:10000,rate:3.0,cap:300,color:'#fbbf24'},
+  {name:'Elite',min:20000,rate:3.3,cap:325,color:'#ec4899'},
+  {name:'Master',min:40000,rate:3.5,cap:350,color:'#ec4899'},
+];
+
+let readProvider,provider,signer,contract,usdtContract,userAddr,pendingAction;
+let adminWalletAddr = CONTRACT_ADDR;
+let rootWalletAddr = CONTRACT_ADDR;
+let minDepositRaw = 2 * DEC;
+let maxDepositRaw = 50000 * DEC;
+let bonusAmountRaw = 50 * DEC;
+let bonusClaimAmtRaw = 5 * DEC;
+let bonusClaimsMaxRaw = 10;
+let liveROI=0,liveROIBase=0,perSecond=0,lastUpdate=Date.now();
+let bonusLiveBase=0;
+let detectedRef = '';
+let roiAnimationStarted = false;
+let poolTimerHandle = null;
+let ethersReadyPromise = null;
+let runtimeErrorShown = false;
+
+const ETHERS_SOURCES = [
+  'https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js',
+  'https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js',
+  'https://unpkg.com/ethers@5.7.2/dist/ethers.umd.min.js'
+];
+
+function fmt(n,d=2){return'$'+(Number(n)/DEC).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d})}
+function fmtN(n,d=2){return(Number(n)/DEC).toFixed(d)}
+function short(a){return a&&a!==ZERO_ADDR?a.slice(0,6)+'...'+a.slice(-4):'—'}
+function usd(n){return'$'+(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function getDefaultReferrer(){return detectedRef || rootWalletAddr || adminWalletAddr || CONTRACT_ADDR}
+function isEmbeddedPreview(){try{return window.top!==window.self}catch(e){return true}}
+
+function resetUserDashboard(){
+  liveROI=0;
+  liveROIBase=0;
+  bonusLiveBase=0;
+  perSecond=0;
+  lastUpdate=Date.now();
+  document.getElementById('sDeposit').textContent='$0.00';
+  document.getElementById('sTier').textContent='Connect wallet';
+  document.getElementById('sROI').textContent='$0.000000';
+  document.getElementById('sRate').textContent='Rate: — / sec';
+  document.getElementById('sWithdrawn').textContent='$0.00';
+  document.getElementById('sCap').textContent='Cap: —';
+  document.getElementById('sTeam').textContent='$0.00';
+  document.getElementById('sTeamSz').textContent='Team: 0 members';
+  document.getElementById('iWallet').textContent='—';
+  document.getElementById('iRef').textContent='—';
+  document.getElementById('iDRef').textContent='—';
+  document.getElementById('iDBiz').textContent='—';
+  document.getElementById('iTeamSz').textContent='—';
+  document.getElementById('iBonusSt').textContent='Wallet disconnected';
+  document.getElementById('capWith').textContent='$0';
+  document.getElementById('capTotal').textContent='—';
+  document.getElementById('iDRate').textContent='—';
+  document.getElementById('iPerSec').textContent='—';
+  document.getElementById('iCap').textContent='—';
+  document.getElementById('iRemCap').textContent='—';
+  document.getElementById('iDaysToCap').textContent='—';
+  document.getElementById('roiCapFill').style.width='0%';
+  document.getElementById('bonusMinerFill').style.width='0%';
+  document.getElementById('miningPct').textContent='0%';
+  document.getElementById('miningArc').setAttribute('stroke-dashoffset','251.2');
+  document.getElementById('bonusRemAmt').textContent=fmt(bonusAmountRaw);
+  document.getElementById('bonusRemLeft').textContent=`${fmt(bonusAmountRaw)} left to mine`;
+  document.getElementById('bonusMinedText').textContent=`$0.00 / ${fmt(bonusAmountRaw)}`;
+  document.getElementById('claimsLeft').textContent=String(bonusClaimsMaxRaw);
+  document.getElementById('bonusHeroBadge').textContent='Locked';
+  document.getElementById('bonusHeroBadge').style.color='var(--gold)';
+  document.getElementById('myRefLink').textContent='Your referral link appears here';
+  document.getElementById('myRefLink2').textContent='Connect to get your link';
+  // Claim button locked by default
+  const cb=document.getElementById('claimBonusBtn');
+  cb.disabled=true; cb.style.opacity='0.45'; cb.style.cursor='not-allowed';
+  cb.textContent='🔒 Locked — Complete a Path to Unlock';
+  buildTierSteps(0);
+  initClaimDots(0);
+}
+
+function setConnectButton(label,disabled=false){
+  const btn=document.getElementById('connBtn');
+  btn.textContent=label;
+  btn.disabled=disabled;
+  btn.style.opacity=disabled?'.7':'1';
+}
+
+function showRuntimeError(err){
+  if(runtimeErrorShown)return;
+  runtimeErrorShown = true;
+  const msg = err && err.message ? err.message : String(err || 'Unknown error');
+  showToast('Runtime error: '+msg,true);
+}
+
+function registerGlobalErrorHandlers(){
+  window.addEventListener('error',event=>{
+    if(event && event.error) showRuntimeError(event.error);
+  });
+  window.addEventListener('unhandledrejection',event=>{
+    const reason = event ? event.reason : null;
+    showRuntimeError(reason instanceof Error ? reason : new Error(String(reason || 'Unhandled promise rejection')));
+  });
+}
+
+function bindUIEvents(){
+  const navButtons = document.querySelectorAll('.nb[data-page]');
+  navButtons.forEach(btn=>{
+    btn.addEventListener('click',()=>goPage(btn.dataset.page,btn));
+  });
+  document.getElementById('connBtn').addEventListener('click',connectWallet);
+  document.getElementById('copyRefTopBtn').addEventListener('click',copyRefLink);
+  document.getElementById('copyRefCardBtn').addEventListener('click',copyRefLink);
+  document.getElementById('claimBonusBtn').addEventListener('click',()=>doAction('claimBonus'));
+  document.getElementById('withdrawBtn').addEventListener('click',()=>doAction('withdraw'));
+  document.getElementById('compoundBtn').addEventListener('click',()=>doAction('compound'));
+  document.getElementById('depositBtn').addEventListener('click',()=>doAction('deposit'));
+  document.getElementById('registerBtn').addEventListener('click',doRegister);
+  document.getElementById('claimPoolBtn').addEventListener('click',()=>doAction('claimPool'));
+  document.getElementById('modalCloseBtn').addEventListener('click',closeModal);
+  document.getElementById('mConfBtn').addEventListener('click',confirmAction);
+  bindActivatePopup();
+}
+
+function loadExternalScript(src){
+  return new Promise((resolve,reject)=>{
+    const script=document.createElement('script');
+    script.src=src;
+    script.async=true;
+    script.onload=()=>resolve();
+    script.onerror=()=>reject(new Error(`Failed to load ${src}`));
+    document.head.appendChild(script);
+  });
+}
+
+async function ensureEthersLoaded(){
+  if(typeof ethers!=='undefined') return ethers;
+  if(!ethersReadyPromise){
+    ethersReadyPromise=(async()=>{
+      for(const src of ETHERS_SOURCES){
+        try{
+          await loadExternalScript(src);
+          if(typeof ethers!=='undefined') return ethers;
+        }catch(e){}
+      }
+      throw new Error('Could not load ethers.js from CDN sources');
+    })();
+  }
+  return ethersReadyPromise;
+}
+
+function pickBestProvider(candidate){
+  if(!candidate) return null;
+  if(Array.isArray(candidate.providers) && candidate.providers.length){
+    return candidate.providers.find(p=>p.isMetaMask) || candidate.providers[0];
+  }
+  return candidate;
+}
+
+function collectInjectedProviders(){
+  const candidates = [];
+  const pushCandidate = value => {
+    const provider = pickBestProvider(value);
+    if(provider && typeof provider.request === 'function' && !candidates.includes(provider)) candidates.push(provider);
+  };
+  try{pushCandidate(window.ethereum);}catch(e){}
+  try{
+    if(window.ethereum && Array.isArray(window.ethereum.providers)){
+      window.ethereum.providers.forEach(pushCandidate);
+    }
+  }catch(e){}
+  try{pushCandidate(window.coinbaseWalletExtension);}catch(e){}
+  try{pushCandidate(window.okxwallet);}catch(e){}
+  try{pushCandidate(window.phantom && window.phantom.ethereum);}catch(e){}
+  try{pushCandidate(window.trustwallet);}catch(e){}
+  try{if(window.parent && window.parent !== window) pushCandidate(window.parent.ethereum);}catch(e){}
+  try{if(window.top && window.top !== window) pushCandidate(window.top.ethereum);}catch(e){}
+  return candidates;
+}
+
+function scanInjectedProvider(){
+  const candidates = collectInjectedProviders();
+  return candidates.find(p=>p.isMetaMask) || candidates[0] || null;
+}
+
+async function getInjectedProvider(timeoutMs=1800){
+  const existing = scanInjectedProvider();
+  if(existing) return existing;
+  await new Promise(resolve=>{
+    const done=()=>resolve(scanInjectedProvider());
+    window.addEventListener('ethereum#initialized',done,{once:true});
+    setTimeout(done,timeoutMs);
+  });
+  return scanInjectedProvider();
+}
+
+function attachWalletListeners(eth){
+  if(!eth||eth.__coreUsdtListenersAttached)return;
+  eth.on('accountsChanged',accounts=>{
+    if(accounts&&accounts.length){
+      window.location.reload();
+      return;
+    }
+    userAddr=null;
+    signer=null;
+    usdtContract=null;
+    contract=(readProvider && typeof ethers!=='undefined')?new ethers.Contract(CONTRACT_ADDR,ABI,readProvider):contract;
+    setConnectButton('Connect Wallet');
+    resetUserDashboard();
+    loadGlobalStats();
+    loadPool();
+  });
+  eth.on('chainChanged',()=>window.location.reload());
+  eth.__coreUsdtListenersAttached=true;
+}
+
+async function bootstrapReadOnly(){
+  try{
+    await ensureEthersLoaded();
+    let lastError = null;
+    for(const rpcUrl of POLYGON_RPCS){
+      try{
+        const candidate = new ethers.providers.StaticJsonRpcProvider(rpcUrl,{name:'matic',chainId:137});
+        await candidate.getBlockNumber();
+        readProvider = candidate;
+        break;
+      }catch(e){
+        lastError = e;
+      }
+    }
+    if(!readProvider) throw lastError || new Error('All Polygon RPC endpoints failed');
+    contract=new ethers.Contract(CONTRACT_ADDR,ABI,readProvider);
+    await loadContractConfig();
+    await loadGlobalStats();
+    await loadPool();
+  }catch(e){
+    showToast('Read-only dashboard load failed: '+e.message,true);
+  }
+}
+
+// detect referrer from URL ?ref=0x...
+function detectRefFromURL(){
+  try{
+    const p = new URLSearchParams(window.location.search);
+    const r = p.get('ref')||p.get('referrer')||p.get('r')||'';
+    if(r && /^0x[0-9a-fA-F]{40}$/.test(r)) return r;
+  }catch(e){}
+  return '';
+}
+
+function initRefDetection(){
+  detectedRef = detectRefFromURL() || detectedRef;
+  const isDetected = !!detectedRef;
+  const displayAddr = getDefaultReferrer();
+  const displayText = isDetected ? short(detectedRef) : short(displayAddr)+' (Root wallet default)';
+
+  document.getElementById('refAddrShow').textContent = displayText;
+  document.getElementById('regRefShow').textContent = displayText;
+  document.getElementById('regAdminNote').textContent = isDetected
+    ? 'Referral auto-detected from your link'
+    : 'No referral link used — you will join under the root wallet';
+  document.getElementById('regRefInput').value = displayAddr;
+}
+
+async function loadContractConfig(){
+  if(!contract)return;
+  try{
+    const [adminWallet,rootWallet,minDeposit,maxDeposit,bonusAmount,bonusClaimAmt,bonusClaimsMax]=await Promise.all([
+      contract.adminWallet(),
+      contract.rootWallet(),
+      contract.MIN_DEPOSIT(),
+      contract.MAX_DEPOSIT(),
+      contract.BONUS_AMOUNT(),
+      contract.BONUS_CLAIM_AMT(),
+      contract.BONUS_CLAIMS_MAX()
+    ]);
+    adminWalletAddr = adminWallet;
+    rootWalletAddr = rootWallet;
+    minDepositRaw = Number(minDeposit);
+    maxDepositRaw = Number(maxDeposit);
+    bonusAmountRaw = Number(bonusAmount);
+    bonusClaimAmtRaw = Number(bonusClaimAmt);
+    bonusClaimsMaxRaw = Number(bonusClaimsMax);
+    document.getElementById('regAmt').placeholder = `Min ${fmt(minDeposit)} — Max ${fmt(maxDeposit,0)}`;
+    initRefDetection();
+  }catch(e){
+    initRefDetection();
+  }
+}
+
+function applyBonusUnlockUI({bonusUnlocked, bonusExpired, activeDeposit, directReferrals, directBusiness, bonusClaimsLeft, nextBonusClaimSeconds}){
+  const up1 = document.getElementById('up1');
+  const up2 = document.getElementById('up2');
+  const up3 = document.getElementById('up3');
+  const dep = Number(activeDeposit);
+  const refsDone = directReferrals >= 10 && dep >= 50 * DEC;
+  const teamDone = directBusiness >= 1000 * DEC && dep >= 40 * DEC;
+  const minedOut = bonusUnlocked || bonusExpired || bonusClaimsLeft < bonusClaimsMaxRaw;
+  up1.classList.toggle('done', minedOut);
+  up2.classList.toggle('done', refsDone);
+  up3.classList.toggle('done', teamDone);
+
+  // Control claim button: only enabled when unlocked AND claim is ready AND claims remain
+  const claimBtn = document.getElementById('claimBonusBtn');
+  const eligible = bonusUnlocked && !bonusExpired && Number(bonusClaimsLeft) > 0 && !(nextBonusClaimSeconds > 0);
+  claimBtn.disabled = !eligible;
+  claimBtn.style.opacity = eligible ? '1' : '0.45';
+  claimBtn.style.cursor = eligible ? 'pointer' : 'not-allowed';
+  if(!bonusUnlocked){
+    claimBtn.textContent = '🔒 Locked — Complete a Path to Unlock';
+  } else if(bonusExpired){
+    claimBtn.textContent = 'Bonus Expired';
+  } else if(Number(bonusClaimsLeft) === 0){
+    claimBtn.textContent = '✅ All Claims Used';
+  } else if(nextBonusClaimSeconds > 0){
+    claimBtn.textContent = `⏳ Next Claim in ${Math.ceil(nextBonusClaimSeconds/3600)}h`;
+  } else {
+    claimBtn.textContent = 'Claim $5 Bonus';
+  }
+}
+
+function setBonusStatusText({bonusUnlocked, bonusExpired, nextBonusClaimSeconds, bonusClaimsLeft}){
+  const statusEl = document.getElementById('iBonusSt');
+  if(bonusExpired){
+    statusEl.textContent = 'Expired';
+    return;
+  }
+  if(bonusUnlocked){
+    statusEl.textContent = Number(bonusClaimsLeft) === 0
+      ? 'Fully claimed'
+      : nextBonusClaimSeconds > 0
+        ? `Unlocked · next claim in ${Math.ceil(nextBonusClaimSeconds / 3600)}h`
+        : 'Unlocked · claim ready';
+    return;
+  }
+  statusEl.textContent = 'Mining...';
+}
+
+function setPoolTimer(endTs){
+  if(poolTimerHandle) clearTimeout(poolTimerHandle);
+  function tick(){
+    const rem=endTs-Math.floor(Date.now()/1000);
+    if(rem<=0){document.getElementById('poolTimer').textContent='ENDED';return;}
+    const d=Math.floor(rem/86400),h=Math.floor((rem%86400)/3600),m=Math.floor((rem%3600)/60),s=rem%60;
+    document.getElementById('poolTimer').textContent=d+'d '+String(h).padStart(2,'0')+'h '+String(m).padStart(2,'0')+'m '+String(s).padStart(2,'0')+'s';
+    poolTimerHandle=setTimeout(tick,1000);
+  }
+  tick();
+}
+
+function goPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('page-'+id).classList.add('on');
+  if(btn)btn.classList.add('on');
+}
+
+function showToast(msg,err){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast on'+(err?' err':'');
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),3400);
+}
+
+function buildTierSteps(deposit){
+  const dep=Number(deposit)/DEC;
+  const wrap=document.getElementById('tierSteps');
+  wrap.innerHTML=TIERS.map((t,i)=>{
+    const reached=dep>=t.min;
+    const isCurrentArr=TIERS.filter(x=>dep>=x.min);
+    const isCurrent=isCurrentArr.length>0&&isCurrentArr[isCurrentArr.length-1]===t;
+    return`<div class="ts-item ${isCurrent?'current':reached?'reached':''}">
+      <div class="ts-name ${reached?'r':''}">${t.name}</div>
+      <div class="ts-rate" style="color:${t.color}">${t.rate}%</div>
+    </div>`;
+  }).join('');
+  const curIdx=TIERS.filter(x=>dep>=x.min).length-1;
+  const cur=TIERS[Math.max(0,curIdx)];
+  const next=TIERS[Math.min(9,curIdx+1)];
+  const pct=curIdx>=9?100:Math.min(100,(dep-cur.min)/(next.min-cur.min)*100);
+  document.getElementById('tierFill').style.width=pct.toFixed(1)+'%';
+  document.getElementById('currentTierBadge').textContent=cur.name+' — '+cur.rate+'%/day';
+  document.getElementById('tierCurrDep').textContent=usd(dep);
+  if(curIdx<9){
+    document.getElementById('tierNextAt').textContent=usd(next.min);
+    document.getElementById('tierNeed').textContent=usd(next.min-dep)+' more';
+  } else {
+    document.getElementById('tierNextAt').textContent='Max Tier';
+    document.getElementById('tierNeed').textContent='—';
+  }
+}
+
+function startLiveROI(){
+  if(roiAnimationStarted)return;
+  roiAnimationStarted = true;
+  function tick(){
+    const elapsed=(Date.now()-lastUpdate)/1000;
+    liveROI=liveROIBase+perSecond*elapsed;
+    const s='$'+(liveROI/DEC).toFixed(6);
+    document.getElementById('sROI').textContent=s;
+    document.getElementById('wdAmt').textContent=s;
+    document.getElementById('cpAmt').textContent=s;
+    // Bonus miner live ROI: 0.5%/day on $50 = $0.25/day = ~$0.00000289/sec
+    const bonusPerSec = (bonusAmountRaw * 0.005) / 86400;
+    const bonusLive = bonusLiveBase + bonusPerSec * elapsed;
+    const bl=document.getElementById('bonusLiveROI');
+    if(bl) bl.textContent='$'+(bonusLive/DEC).toFixed(6);
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+function initClaimDots(claimed){
+  const w=document.getElementById('claimDots');
+  w.innerHTML='';
+  for(let i=0;i<bonusClaimsMaxRaw;i++){
+    const d=document.createElement('div');
+    d.className='cd '+(i<claimed?'done':i===claimed?'next':'empty');
+    d.textContent=i<claimed?'✓':(i+1);
+    w.appendChild(d);
+  }
+}
+
+async function loadGlobalStats(){
+  if(!contract)return;
+  try{
+    const [bal,tot,usr]=await Promise.all([
+      contract.contractBalance(),
+      contract.totalDeposits(),
+      contract.totalUsers()
+    ]);
+    document.getElementById('gContractBal').textContent=fmt(bal);
+    document.getElementById('gTotalDep').textContent=fmt(tot);
+    document.getElementById('gTotalUsers').textContent=Number(usr).toLocaleString();
+  }catch(e){}
+}
+
+async function loadDashboard(){
+  if(!contract||!userAddr)return;
+  try{
+    const [info,network,poolClaim,nextBonusClaimIn]=await Promise.all([
+      contract.getUserInfo(userAddr),
+      contract.getUserNetwork(userAddr),
+      contract.canClaimPool(userAddr),
+      contract.nextBonusClaimIn(userAddr)
+    ]);
+    const [referrer,activeDeposit,totalWithdrawn,pendingROI,bonusMined,bonusClaimed,bonusClaimsLeft,bonusUnlocked,bonusExpired]=info;
+    const [directRefs,directBiz,teamSize,teamBiz,tierName,dailyBPS,capBPS]=network;
+    const [poolEligible,poolRank]=poolClaim;
+
+    document.getElementById('sDeposit').textContent=fmt(activeDeposit);
+    document.getElementById('sTier').textContent='Tier: '+tierName;
+    document.getElementById('sWithdrawn').textContent=fmt(totalWithdrawn);
+    document.getElementById('sTeam').textContent=fmt(teamBiz);
+    document.getElementById('sTeamSz').textContent='Team: '+teamSize.toString()+' members';
+    document.getElementById('iTeamSz').textContent=teamSize.toString();
+
+    const cap=activeDeposit.mul(capBPS).div(10000);
+    const rem=cap.gt(totalWithdrawn)?cap.sub(totalWithdrawn):ethers.BigNumber.from(0);
+    document.getElementById('sCap').textContent='Cap: '+fmt(cap);
+    document.getElementById('capWith').textContent=fmt(totalWithdrawn);
+    document.getElementById('capTotal').textContent=fmt(cap)+' ('+Number(capBPS)/100+'%)';
+    document.getElementById('iCap').textContent=fmt(cap);
+    document.getElementById('iRemCap').textContent=rem.gt(0)?fmt(rem):'$0.00 (CAPPED)';
+    const capPct=cap.gt(0)?Math.min(100,Number(totalWithdrawn)/Number(cap)*100):0;
+    document.getElementById('roiCapFill').style.width=capPct.toFixed(1)+'%';
+
+    const ratePerDay=Number(activeDeposit)*Number(dailyBPS)/10000;
+    const ratePerSec=ratePerDay/86400;
+    perSecond=ratePerSec;
+    liveROIBase=Number(pendingROI);
+    lastUpdate=Date.now();
+    document.getElementById('iDRate').textContent=(Number(dailyBPS)/100).toFixed(2)+'% / day';
+    document.getElementById('iPerSec').textContent='$'+(ratePerSec/DEC).toFixed(8)+' / sec';
+    document.getElementById('sRate').textContent='Rate: $'+(ratePerSec/DEC).toFixed(8)+' / sec';
+    const daysLeft=rem.gt(0)&&ratePerDay>0?(Number(rem)/ratePerDay).toFixed(1):0;
+    document.getElementById('iDaysToCap').textContent=daysLeft?daysLeft+' days':'Capped';
+
+    document.getElementById('iWallet').textContent=short(userAddr);
+    document.getElementById('iRef').textContent=short(referrer.toString());
+    document.getElementById('iDRef').textContent=directRefs.toString();
+    document.getElementById('iDBiz').textContent=fmt(directBiz);
+
+    const bonusPct=bonusAmountRaw > 0 ? Math.min(100,(Number(bonusMined)/bonusAmountRaw)*100) : 0;
+    document.getElementById('bonusMinerFill').style.width=bonusPct.toFixed(1)+'%';
+    document.getElementById('miningPct').textContent=bonusPct.toFixed(1)+'%';
+    document.getElementById('miningArc').setAttribute('stroke-dashoffset',(251.2*(1-bonusPct/100)).toFixed(1));
+    const bonusRemDollar=Math.max(0,(bonusAmountRaw-Number(bonusMined))/DEC);
+    document.getElementById('bonusRemAmt').textContent=usd(bonusRemDollar);
+    document.getElementById('bonusRemLeft').textContent='$'+bonusRemDollar.toFixed(2)+' left to mine';
+    document.getElementById('bonusMinedText').textContent=fmt(bonusMined)+' / '+fmt(bonusAmountRaw);
+    document.getElementById('claimsLeft').textContent=bonusClaimsLeft.toString();
+    initClaimDots(Math.max(0,bonusClaimsMaxRaw-Number(bonusClaimsLeft)));
+
+    const st=bonusExpired?'Expired':bonusUnlocked?'Unlocked':'Mining';
+    const stColor=bonusExpired?'#ef4444':bonusUnlocked?'#10b981':'#fbbf24';
+    const badge=document.getElementById('bonusHeroBadge');
+    badge.textContent=st;badge.style.color=stColor;
+    applyBonusUnlockUI({bonusUnlocked, bonusExpired, activeDeposit, directReferrals:Number(directRefs), directBusiness:Number(directBiz), bonusClaimsLeft:Number(bonusClaimsLeft), nextBonusClaimSeconds:Number(nextBonusClaimIn)});
+    setBonusStatusText({bonusUnlocked, bonusExpired, nextBonusClaimSeconds:Number(nextBonusClaimIn), bonusClaimsLeft});
+
+    buildTierSteps(activeDeposit);
+
+    const ref=referrer.toString();
+    const myLink=window.location.origin+window.location.pathname+'?ref='+userAddr;
+    document.getElementById('myRefLink').textContent=myLink;
+    document.getElementById('myRefLink2').textContent=myLink;
+    document.getElementById('refAddrShow').textContent=ref&&ref!==ZERO_ADDR?short(ref):short(getDefaultReferrer())+' (Default)';
+
+    const claimPoolBtn = document.querySelector("#page-pool .abtn.ap");
+    if(claimPoolBtn){
+      claimPoolBtn.disabled = !poolEligible;
+      claimPoolBtn.style.opacity = poolEligible ? '1' : '.55';
+      claimPoolBtn.textContent = poolEligible ? `Claim Pool Share${Number(poolRank)>0?` (#${poolRank})`:''}` : 'Claim Pool Share';
+    }
+
+    updateIoIStats(teamSize, teamBiz, activeDeposit);
+    // Show activate popup if no deposit yet
+    if(Number(activeDeposit)===0) maybeShowActivatePopup();
+    await loadGlobalStats();
+  }catch(e){showToast('Load error: '+e.message,true);}
+}
+
+async function loadPool(){
+  if(!contract)return;
+  try{
+    const info=await contract.getPoolInfo();
+    const [poolBal,cycleStart,cycleEnd,cycle,claimable,leaders,shares]=info;
+    document.getElementById('poolBal').textContent=fmt(poolBal);
+    document.getElementById('cycleNum').textContent='#'+cycle.toString();
+    document.getElementById('cycleStart').textContent=new Date(Number(cycleStart)*1000).toLocaleDateString();
+    document.getElementById('cycleEnd').textContent=new Date(Number(cycleEnd)*1000).toLocaleDateString();
+    document.getElementById('cycleStatus').textContent=claimable?'Claimable Now':'In Progress';
+
+    const lb=document.getElementById('leaderboard');
+    const validLeaders=leaders.filter(a=>a!=='0x0000000000000000000000000000000000000000');
+    lb.innerHTML=validLeaders.length?validLeaders.map((a,i)=>`
+      <div class="leaderboard-row">
+        <span class="lr-rank ${i<3?'top3':''}">#${i+1}</span>
+        <span class="lr-addr">${short(a)}</span>
+        <span class="lr-pct">${shares[i].toString()}%</span>
+      </div>`).join(''):'<div style="color:var(--muted);font-size:12px;text-align:center;padding:18px">No leaders yet this cycle</div>';
+    setPoolTimer(Number(cycleEnd));
+  }catch(e){}
+}
+
+function copyRefLink(){
+  const link=document.getElementById('myRefLink').textContent;
+  if(link&&link.startsWith('http'))navigator.clipboard.writeText(link).then(()=>showToast('Referral link copied!'));
+  else showToast('Connect wallet first',true);
+}
+
+async function syncWalletConnection(requestAccess){
+  const injected=await getInjectedProvider();
+  if(!injected){
+    const msg=window.location.protocol==='file:'
+      ? 'Wallet not detected. If opened directly as a file, enable MetaMask file URL access or use Open with Live Server.'
+      : isEmbeddedPreview()
+        ? 'Wallet not detected in preview pane. Use Open with Live Server in an external Chrome/Brave browser window.'
+        : 'Wallet not detected. Open this Live Server page in Chrome/Brave with MetaMask installed.';
+    throw new Error(msg);
+  }
+  if(typeof injected.request !== 'function'){
+    throw new Error('Injected wallet provider is invalid');
+  }
+  attachWalletListeners(injected);
+  const accounts = requestAccess
+    ? await injected.request({method:'eth_requestAccounts'})
+    : await injected.request({method:'eth_accounts'});
+  if(!accounts || !accounts.length){
+    if(requestAccess) throw new Error('No wallet account was approved');
+    return false;
+  }
+  const prov=new ethers.providers.Web3Provider(injected,'any');
+  const net=await prov.getNetwork();
+  if(net.chainId!==137){
+    if(!requestAccess) return false;
+    try{
+      await injected.request({method:'wallet_switchEthereumChain',params:[{chainId:'0x89'}]});
+    }catch(switchError){
+      await injected.request({
+        method:'wallet_addEthereumChain',
+        params:[{
+          chainId:'0x89',
+          chainName:'Polygon Mainnet',
+          nativeCurrency:{name:'MATIC',symbol:'MATIC',decimals:18},
+          rpcUrls:[POLYGON_RPC],
+          blockExplorerUrls:['https://polygonscan.com/']
+        }]
+      });
+    }
+  }
+  await ensureEthersLoaded();
+  provider=new ethers.providers.Web3Provider(injected,'any');
+  signer=provider.getSigner();
+  userAddr=await signer.getAddress();
+  contract=new ethers.Contract(CONTRACT_ADDR,ABI,signer);
+  usdtContract=new ethers.Contract(USDT_ADDR,USDT_ABI,signer);
+  await loadContractConfig();
+  setConnectButton(short(userAddr));
+  await loadDashboard();
+  await loadPool();
+  startLiveROI();
+  return true;
+}
+
+async function connectWallet(){
+  setConnectButton('Connecting...',true);
+  try{
+    const connected = await syncWalletConnection(true);
+    if(connected) showToast('Connected to Polygon!');
+  }catch(e){
+    showToast('Connection failed: '+e.message,true);
+  }finally{
+    if(!userAddr)setConnectButton('Connect Wallet');
+    document.getElementById('connBtn').disabled=false;
+    document.getElementById('connBtn').style.opacity='1';
+  }
+}
+
+async function restoreWalletSession(){
+  try{
+    const connected = await syncWalletConnection(false);
+    if(!connected){
+      setConnectButton('Connect Wallet');
+      resetUserDashboard();
+    }
+  }catch(e){
+    setConnectButton('Connect Wallet');
+    resetUserDashboard();
+  }
+}
+
+let curAction='';
+function doAction(type){
+  if(!userAddr){showToast('Connect wallet first',true);return;}
+  curAction=type;
+  const labels={withdraw:'Withdraw ROI',compound:'Compound ROI',deposit:'Deposit USDT',claimBonus:'Claim $5 Bonus',claimPool:'Claim Pool Share'};
+  const amts={
+    withdraw:document.getElementById('wdAmt').textContent,
+    compound:document.getElementById('cpAmt').textContent,
+    deposit:'$'+(document.getElementById('depInput').value||'0'),
+    claimBonus:fmt(bonusClaimAmtRaw),claimPool:'Your share'
+  };
+  document.getElementById('modalTitle').textContent=labels[type];
+  document.getElementById('mAction').textContent=labels[type];
+  document.getElementById('mAmount').textContent=amts[type];
+  document.getElementById('modal').classList.add('on');
+}
+function closeModal(){document.getElementById('modal').classList.remove('on');}
+
+async function confirmAction(){
+  const btn=document.getElementById('mConfBtn');
+  btn.textContent='Sending...';btn.disabled=true;
+  try{
+    let tx;
+    if(curAction==='withdraw') tx=await contract.withdraw();
+    else if(curAction==='compound') tx=await contract.compound();
+    else if(curAction==='claimBonus') tx=await contract.claimBonus();
+    else if(curAction==='claimPool') tx=await contract.claimLeaderPoolShare();
+    else if(curAction==='deposit'){
+      const raw=document.getElementById('depInput').value;
+      const amt=Math.floor(parseFloat(raw)*DEC);
+      if(!amt||amt<minDepositRaw){showToast(`Min ${fmt(minDepositRaw)} deposit`,true);return;}
+      if(amt>maxDepositRaw){showToast(`Max ${fmt(maxDepositRaw,0)} deposit`,true);return;}
+      const amtBN=ethers.BigNumber.from(amt.toString());
+      const allow=await usdtContract.allowance(userAddr,CONTRACT_ADDR);
+      if(allow.lt(amtBN)){showToast('Approving USDT...');const a=await usdtContract.approve(CONTRACT_ADDR,amtBN);await a.wait();}
+      tx=await contract.deposit(amtBN);
+    }
+    showToast('Transaction sent!');
+    await tx.wait();
+    showToast('Confirmed on Polygon!');
+    closeModal();
+    await loadDashboard();await loadPool();
+    liveROIBase=0;lastUpdate=Date.now();
+  }catch(e){showToast(e.reason||e.message||'Failed',true);}
+  finally{btn.textContent='Confirm Transaction';btn.disabled=false;}
+}
+
+async function doRegister(){
+  if(!userAddr){showToast('Connect wallet first',true);return;}
+  const ref=document.getElementById('regRefInput').value.trim()||getDefaultReferrer();
+  const amt=parseFloat(document.getElementById('regAmt').value);
+  if(!/^0x[0-9a-fA-F]{40}$/.test(ref)){showToast('Invalid referrer address',true);return;}
+  if(!amt||amt<minDepositRaw/DEC){showToast(`Min ${fmt(minDepositRaw)} deposit`,true);return;}
+  if(amt>maxDepositRaw/DEC){showToast(`Max ${fmt(maxDepositRaw,0)} deposit`,true);return;}
+  const btn=document.getElementById('registerBtn');
+  btn.disabled=true;btn.textContent='⏳ Registering...';
+  try{
+    showToast('Registering on Polygon...');
+    const rtx=await contract.register(ref);await rtx.wait();
+    const amtBN=ethers.BigNumber.from(Math.floor(amt*DEC).toString());
+    const allow=await usdtContract.allowance(userAddr,CONTRACT_ADDR);
+    if(allow.lt(amtBN)){showToast('Approving USDT...');const a=await usdtContract.approve(CONTRACT_ADDR,amtBN);await a.wait();}
+    showToast('Depositing USDT...');
+    const dtx=await contract.deposit(amtBN);await dtx.wait();
+    // Show success overlay then redirect to dashboard
+    showRegSuccess();
+    await loadDashboard();
+    activateShown=false; // reset so popup shows after success
+  }catch(e){
+    showToast(e.reason||e.message||'Failed',true);
+    btn.disabled=false;btn.textContent='🚀 Register + Activate $50 Bonus Miner';
+  }
+}
+
+function showRegSuccess(){
+  const overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)';
+  overlay.innerHTML=`
+    <div style="background:linear-gradient(135deg,#111526,#161a2e);border:1px solid rgba(168,85,247,0.5);border-radius:20px;padding:40px 36px;text-align:center;max-width:400px;animation:fadeInUp .4s ease both;box-shadow:0 0 60px rgba(168,85,247,0.3)">
+      <div style="font-size:56px;margin-bottom:16px">🎉</div>
+      <div style="font-size:22px;font-weight:800;margin-bottom:8px;background:linear-gradient(135deg,#a855f7,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Registration Successful!</div>
+      <div style="font-size:14px;color:#7a85a8;margin-bottom:20px;line-height:1.6">Your $50 Bonus Miner is now active.<br>Mine $0.25/day — claim $5 every 24h after unlock.</div>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:24px">
+        <span style="padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700;background:rgba(16,185,129,.12);color:#10b981;border:1px solid rgba(16,185,129,.3)">✅ Registered</span>
+        <span style="padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700;background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.3)">⛏ $50 Miner Active</span>
+      </div>
+      <button id="regSuccessBtn" style="background:linear-gradient(135deg,#a855f7,#06b6d4);border:none;color:#fff;padding:13px 32px;border-radius:12px;font-size:14px;font-weight:800;cursor:pointer;width:100%">Go to Dashboard →</button>
+    </div>`;
+  document.body.appendChild(overlay);
+  document.getElementById('regSuccessBtn').addEventListener('click',()=>{
+    overlay.remove();
+    goPage('dash',document.querySelector('.nb[data-page="dash"]'));
+  });
+  setTimeout(()=>{
+    if(document.body.contains(overlay)){
+      overlay.remove();
+      goPage('dash',document.querySelector('.nb[data-page="dash"]'));
+    }
+  },6000);
+}
+
+// ===== SPACE BACKGROUND CANVAS =====
+function initSpaceCanvas(){
+  const canvas=document.getElementById('spaceBg');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  let W,H,stars=[],rockets=[];
+
+  function resize(){
+    W=canvas.width=window.innerWidth;
+    H=canvas.height=window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize',resize);
+
+  // Stars
+  for(let i=0;i<180;i++){
+    stars.push({
+      x:Math.random()*3000,y:Math.random()*3000,
+      r:Math.random()*1.4+0.2,
+      a:Math.random(),da:(Math.random()-.5)*.008,
+      color:['#fff','#a855f7','#06b6d4','#fbbf24'][Math.floor(Math.random()*4)]
+    });
+  }
+
+  // Rocket class
+  function spawnRocket(){
+    return {
+      x:-80,y:H*.3+Math.random()*H*.5,
+      vx:1.2+Math.random()*1.8,vy:-(0.3+Math.random()*.6),
+      emoji:['🚀','🛸','⭐','💫'][Math.floor(Math.random()*4)],
+      size:16+Math.random()*14,
+      life:0,maxLife:320+Math.random()*200,
+      trail:[]
+    };
+  }
+  rockets.push(spawnRocket());
+  setInterval(()=>{if(rockets.length<4)rockets.push(spawnRocket())},4500);
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+
+    // Draw stars
+    stars.forEach(s=>{
+      s.a+=s.da;
+      if(s.a>1||s.a<0.1)s.da*=-1;
+      ctx.save();
+      ctx.globalAlpha=Math.max(0.05,s.a*0.6);
+      ctx.fillStyle=s.color;
+      ctx.beginPath();
+      ctx.arc(s.x%W,s.y%H,s.r,0,Math.PI*2);
+      ctx.fill();
+      ctx.restore();
+    });
+
+    // Nebula glows
+    const ng=[
+      {x:W*.15,y:H*.25,r:180,c:'rgba(168,85,247,0.05)'},
+      {x:W*.8,y:H*.6,r:220,c:'rgba(6,182,212,0.04)'},
+      {x:W*.5,y:H*.85,r:160,c:'rgba(236,72,153,0.03)'}
+    ];
+    ng.forEach(n=>{
+      const g=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r);
+      g.addColorStop(0,n.c);g.addColorStop(1,'transparent');
+      ctx.fillStyle=g;ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,Math.PI*2);ctx.fill();
+    });
+
+    // Rockets / ships
+    rockets.forEach((r,i)=>{
+      r.trail.push({x:r.x,y:r.y});
+      if(r.trail.length>18)r.trail.shift();
+      // Draw trail
+      r.trail.forEach((t,ti)=>{
+        ctx.save();
+        ctx.globalAlpha=(ti/r.trail.length)*0.25;
+        ctx.fillStyle='#a855f7';
+        ctx.beginPath();ctx.arc(t.x,t.y,2.5*(ti/r.trail.length),0,Math.PI*2);ctx.fill();
+        ctx.restore();
+      });
+      // Draw emoji
+      ctx.save();
+      ctx.globalAlpha=Math.min(1,r.life/30)*Math.min(1,(r.maxLife-r.life)/40);
+      ctx.font=r.size+'px serif';
+      ctx.fillText(r.emoji,r.x-r.size/2,r.y+r.size/2);
+      ctx.restore();
+      r.x+=r.vx;r.y+=r.vy;r.life++;
+      if(r.life>=r.maxLife){rockets.splice(i,1);}
+    });
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// ===== ACTIVATE ROI POPUP =====
+let activateShown = false;
+function maybeShowActivatePopup(){
+  if(activateShown)return;
+  activateShown=true;
+  setTimeout(()=>{
+    const popup=document.getElementById('activatePopup');
+    if(popup)popup.classList.add('on');
+  },3500);
+}
+
+function bindActivatePopup(){
+  const popup=document.getElementById('activatePopup');
+  const depBtn=document.getElementById('activateDepBtn');
+  const laterBtn=document.getElementById('activateLaterBtn');
+  if(depBtn)depBtn.addEventListener('click',()=>{
+    popup.classList.remove('on');
+    // Scroll to deposit card
+    const depInput=document.getElementById('depInput');
+    if(depInput){depInput.focus();depInput.scrollIntoView({behavior:'smooth',block:'center'});}
+  });
+  if(laterBtn)laterBtn.addEventListener('click',()=>popup.classList.remove('on'));
+  if(popup)popup.addEventListener('click',e=>{if(e.target===popup)popup.classList.remove('on');});
+}
+
+// ===== IOI EARNINGS UPDATE =====
+function updateIoIStats(teamSize, teamBiz, activeDeposit){
+  const ts = Number(teamSize)||0;
+  const tb = Number(teamBiz)||0;
+  const dep = Number(activeDeposit)||0;
+  // Estimate IoI earnings: weighted average ~4% on team ROI (1.5%/day avg)
+  const estimatedTeamDailyROI = tb * 0.015;
+  const avgIoIRate = 0.04; // blended L1-L10 rate estimate
+  const dailyIoI = estimatedTeamDailyROI * avgIoIRate;
+  const totalEstIoI = dailyIoI * 30; // 30-day estimate
+  const levelsActive = ts > 0 ? Math.min(10, Math.floor(Math.log2(ts+1))+1) : 0;
+  const el1=document.getElementById('ioiTotalEarned');
+  const el2=document.getElementById('ioiTeamActive');
+  const el3=document.getElementById('ioiLevelsActive');
+  const el4=document.getElementById('ioiDailyEst');
+  if(el1)el1.textContent='$'+(totalEstIoI/DEC).toFixed(2);
+  if(el2)el2.textContent=ts;
+  if(el3)el3.textContent=levelsActive>0?levelsActive+'/10':'—';
+  if(el4)el4.textContent='$'+(dailyIoI/DEC).toFixed(2);
+}
+
+// Init
+initRefDetection();
+initClaimDots(0);
+buildTierSteps(0);
+startLiveROI();
+resetUserDashboard();
+registerGlobalErrorHandlers();
+bindUIEvents();
+
+initSpaceCanvas();
+bootstrapReadOnly().then(()=>restoreWalletSession());
+if(isEmbeddedPreview()){
+  setTimeout(()=>{
+    if(!scanInjectedProvider()){
+      showToast('Open this page with Live Server in external browser, not inside preview pane.',true);
+    }
+  },800);
+}
+</script>
+</body>
+</html>
