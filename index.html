@@ -31,6 +31,8 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-ap
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 .cbtn{background:linear-gradient(135deg,#a855f7,#06b6d4);border:none;color:#fff;padding:8px 18px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;transition:opacity .2s}
 .cbtn:hover{opacity:.85}
+.cbtn.alt{background:transparent;border:1px solid rgba(239,68,68,.35);color:#fca5a5;padding:8px 14px}
+.cbtn.alt:hover{background:rgba(239,68,68,.08);opacity:1}
 
 /* NAV PAGES */
 .page{display:none;padding:16px;max-width:1120px;margin:0 auto;width:100%;overflow-x:hidden}
@@ -394,6 +396,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
   <div class="hdr-r">
     <div class="chain-b"><div class="dot-live"></div>Polygon</div>
     <button class="cbtn" id="connBtn" type="button">Connect Wallet</button>
+    <button class="cbtn alt" id="disconnectBtn" type="button" style="display:none">Disconnect Wallet</button>
   </div>
 </header>
 
@@ -947,6 +950,11 @@ function setConnectButton(label,disabled=false){
   btn.style.opacity=disabled?'.7':'1';
 }
 
+function updateWalletButtons(connected){
+  const disconnectBtn = document.getElementById('disconnectBtn');
+  if(disconnectBtn) disconnectBtn.style.display = connected ? 'inline-flex' : 'none';
+}
+
 function showRuntimeError(err){
   if(runtimeErrorShown)return;
   runtimeErrorShown = true;
@@ -970,6 +978,7 @@ function bindUIEvents(){
     btn.addEventListener('click',()=>goPage(btn.dataset.page,btn));
   });
   document.getElementById('connBtn').addEventListener('click',connectWallet);
+  document.getElementById('disconnectBtn').addEventListener('click',disconnectWallet);
   document.getElementById('copyRefTopBtn').addEventListener('click',copyRefLink);
   document.getElementById('copyRefCardBtn').addEventListener('click',copyRefLink);
   document.getElementById('claimBonusBtn').addEventListener('click',()=>doAction('claimBonus'));
@@ -1013,14 +1022,47 @@ async function ensureEthersLoaded(){
 function pickBestProvider(candidate){
   if(!candidate) return null;
   if(Array.isArray(candidate.providers) && candidate.providers.length){
-    return candidate.providers.find(p=>p.isMetaMask) || candidate.providers[0];
+    return candidate.providers
+      .map(pickBestProvider)
+      .filter(Boolean)
+      .sort((a,b)=>getProviderScore(b)-getProviderScore(a))[0] || null;
   }
   return candidate;
+}
+
+function getProviderName(provider){
+  if(!provider) return '';
+  if(provider.isTrust || provider.isTrustWallet) return 'Trust Wallet';
+  if(provider.isTokenPocket) return 'TokenPocket';
+  if(provider.isSafePal) return 'SafePal';
+  if(provider.isMetaMask) return 'MetaMask';
+  if(provider.isCoinbaseWallet || provider.isCoinbaseBrowser) return 'Coinbase Wallet';
+  if(provider.isOkxWallet || provider.isOKExWallet) return 'OKX Wallet';
+  if(provider.isPhantom) return 'Phantom';
+  return 'Wallet';
+}
+
+function getProviderScore(provider){
+  if(!provider || typeof provider.request !== 'function') return -1;
+  let score = 0;
+  if(provider.isMetaMask) score += 120;
+  if(provider.isTrust || provider.isTrustWallet) score += 115;
+  if(provider.isTokenPocket) score += 110;
+  if(provider.isSafePal) score += 105;
+  if(provider.isCoinbaseWallet || provider.isCoinbaseBrowser) score += 100;
+  if(provider.isOkxWallet || provider.isOKExWallet) score += 95;
+  if(provider.isPhantom) score += 90;
+  if(provider.providers && provider.providers.length) score += 5;
+  return score;
 }
 
 function collectInjectedProviders(){
   const candidates = [];
   const pushCandidate = value => {
+    if(Array.isArray(value)){
+      value.forEach(pushCandidate);
+      return;
+    }
     const provider = pickBestProvider(value);
     if(provider && typeof provider.request === 'function' && !candidates.includes(provider)) candidates.push(provider);
   };
@@ -1032,8 +1074,15 @@ function collectInjectedProviders(){
   }catch(e){}
   try{pushCandidate(window.coinbaseWalletExtension);}catch(e){}
   try{pushCandidate(window.okxwallet);}catch(e){}
+  try{pushCandidate(window.tokenpocket && window.tokenpocket.ethereum);}catch(e){}
+  try{pushCandidate(window.tokenPocket && window.tokenPocket.ethereum);}catch(e){}
+  try{pushCandidate(window.TokenPocket && window.TokenPocket.ethereum);}catch(e){}
+  try{pushCandidate(window.safepal && window.safepal.ethereum);}catch(e){}
+  try{pushCandidate(window.SafePal && window.SafePal.ethereum);}catch(e){}
   try{pushCandidate(window.phantom && window.phantom.ethereum);}catch(e){}
   try{pushCandidate(window.trustwallet);}catch(e){}
+  try{pushCandidate(window.trustwallet && window.trustwallet.ethereum);}catch(e){}
+  try{pushCandidate(window.ethereum && window.ethereum.providerMap && Array.from(window.ethereum.providerMap.values()));}catch(e){}
   try{if(window.parent && window.parent !== window) pushCandidate(window.parent.ethereum);}catch(e){}
   try{if(window.top && window.top !== window) pushCandidate(window.top.ethereum);}catch(e){}
   return candidates;
@@ -1041,7 +1090,7 @@ function collectInjectedProviders(){
 
 function scanInjectedProvider(){
   const candidates = collectInjectedProviders();
-  return candidates.find(p=>p.isMetaMask) || candidates[0] || null;
+  return candidates.sort((a,b)=>getProviderScore(b)-getProviderScore(a))[0] || null;
 }
 
 async function getInjectedProvider(timeoutMs=1800){
@@ -1050,9 +1099,45 @@ async function getInjectedProvider(timeoutMs=1800){
   await new Promise(resolve=>{
     const done=()=>resolve(scanInjectedProvider());
     window.addEventListener('ethereum#initialized',done,{once:true});
+    window.addEventListener('eip6963:announceProvider',done,{once:true});
+    window.addEventListener('trustwallet#initialized',done,{once:true});
     setTimeout(done,timeoutMs);
   });
   return scanInjectedProvider();
+}
+
+async function requestWalletAccounts(injected,requestAccess){
+  if(requestAccess) return injected.request({method:'eth_requestAccounts'});
+  return injected.request({method:'eth_accounts'});
+}
+
+async function ensurePolygonNetwork(injected,requestAccess){
+  const prov=new ethers.providers.Web3Provider(injected,'any');
+  const net=await prov.getNetwork();
+  if(net.chainId===137) return true;
+  if(!requestAccess) return false;
+  try{
+    await injected.request({method:'wallet_switchEthereumChain',params:[{chainId:'0x89'}]});
+  }catch(switchError){
+    const code = switchError && (switchError.code ?? switchError.data?.originalError?.code);
+    const message = String((switchError && switchError.message) || '').toLowerCase();
+    const canAddChain = code === 4902 || message.includes('unrecognized chain') || message.includes('unknown chain');
+    if(canAddChain){
+      await injected.request({
+        method:'wallet_addEthereumChain',
+        params:[{
+          chainId:'0x89',
+          chainName:'Polygon Mainnet',
+          nativeCurrency:{name:'POL',symbol:'POL',decimals:18},
+          rpcUrls:POLYGON_RPCS,
+          blockExplorerUrls:['https://polygonscan.com/']
+        }]
+      });
+    }else{
+      throw switchError;
+    }
+  }
+  return true;
 }
 
 function attachWalletListeners(eth){
@@ -1062,14 +1147,7 @@ function attachWalletListeners(eth){
       window.location.reload();
       return;
     }
-    userAddr=null;
-    signer=null;
-    usdtContract=null;
-    contract=(readProvider && typeof ethers!=='undefined')?new ethers.Contract(CONTRACT_ADDR,ABI,readProvider):contract;
-    setConnectButton('Connect Wallet');
-    resetUserDashboard();
-    loadGlobalStats();
-    loadPool();
+    disconnectWallet(true);
   });
   eth.on('chainChanged',()=>window.location.reload());
   eth.__coreUsdtListenersAttached=true;
@@ -1418,40 +1496,21 @@ async function syncWalletConnection(requestAccess){
       ? 'Wallet not detected. If opened directly as a file, enable MetaMask file URL access or use Open with Live Server.'
       : isEmbeddedPreview()
         ? 'Wallet not detected in preview pane. Use Open with Live Server in an external Chrome/Brave browser window.'
-        : 'Wallet not detected. Open this Live Server page in Chrome/Brave with MetaMask installed.';
+        : 'Wallet not detected. Open this page in MetaMask, Trust Wallet, TokenPocket, SafePal, or Chrome/Brave with an injected wallet.';
     throw new Error(msg);
   }
   if(typeof injected.request !== 'function'){
     throw new Error('Injected wallet provider is invalid');
   }
   attachWalletListeners(injected);
-  const accounts = requestAccess
-    ? await injected.request({method:'eth_requestAccounts'})
-    : await injected.request({method:'eth_accounts'});
+  const accounts = await requestWalletAccounts(injected,requestAccess);
   if(!accounts || !accounts.length){
-    if(requestAccess) throw new Error('No wallet account was approved');
+    if(requestAccess) throw new Error(`${getProviderName(injected)} did not return an approved account`);
     return false;
   }
-  const prov=new ethers.providers.Web3Provider(injected,'any');
-  const net=await prov.getNetwork();
-  if(net.chainId!==137){
-    if(!requestAccess) return false;
-    try{
-      await injected.request({method:'wallet_switchEthereumChain',params:[{chainId:'0x89'}]});
-    }catch(switchError){
-      await injected.request({
-        method:'wallet_addEthereumChain',
-        params:[{
-          chainId:'0x89',
-          chainName:'Polygon Mainnet',
-          nativeCurrency:{name:'MATIC',symbol:'MATIC',decimals:18},
-          rpcUrls:[POLYGON_RPC],
-          blockExplorerUrls:['https://polygonscan.com/']
-        }]
-      });
-    }
-  }
   await ensureEthersLoaded();
+  const onPolygon = await ensurePolygonNetwork(injected,requestAccess);
+  if(!onPolygon) return false;
   provider=new ethers.providers.Web3Provider(injected,'any');
   signer=provider.getSigner();
   userAddr=await signer.getAddress();
@@ -1459,13 +1518,32 @@ async function syncWalletConnection(requestAccess){
   usdtContract=new ethers.Contract(USDT_ADDR,USDT_ABI,signer);
   await loadContractConfig();
   setConnectButton(short(userAddr));
+  updateWalletButtons(true);
   // Check if user is registered on-chain
   let userIsRegistered = false;
   try{
-    const info = await contract.getUserInfo(userAddr);
-    const referrer = info[0].toString();
-    // Registered = referrer is set (not zero address)
-    userIsRegistered = referrer && referrer !== ZERO_ADDR && referrer.toLowerCase() !== 'undefined';
+    const [info,network] = await Promise.all([
+      contract.getUserInfo(userAddr),
+      contract.getUserNetwork(userAddr)
+    ]);
+    const [referrer,activeDeposit,totalWithdrawn,pendingROI,bonusMined,bonusClaimed,bonusClaimsLeft,bonusUnlocked,bonusExpired] = info;
+    const [directRefs,directBiz,teamSize,teamBiz,tierName] = network;
+    const refAddr = String(referrer || '').toLowerCase();
+    userIsRegistered =
+      (refAddr && refAddr !== ZERO_ADDR.toLowerCase() && refAddr !== 'undefined') ||
+      Number(activeDeposit) > 0 ||
+      Number(totalWithdrawn) > 0 ||
+      Number(pendingROI) > 0 ||
+      Number(bonusMined) > 0 ||
+      Number(bonusClaimed) > 0 ||
+      Number(bonusClaimsLeft) !== Number(bonusClaimsMaxRaw) ||
+      !!bonusUnlocked ||
+      !!bonusExpired ||
+      Number(directRefs) > 0 ||
+      Number(directBiz) > 0 ||
+      Number(teamSize) > 0 ||
+      Number(teamBiz) > 0 ||
+      (tierName && String(tierName).trim() && String(tierName).trim().toLowerCase() !== 'starter');
   }catch(e){
     // Call reverted or failed — treat as unregistered
     userIsRegistered = false;
@@ -1497,15 +1575,46 @@ async function connectWallet(){
   }
 }
 
+function hideRegisterGateway(){
+  const banner = document.getElementById('regGatewayBanner');
+  if(banner) banner.style.display = 'none';
+}
+
+function restoreMainNavigation(){
+  document.getElementById('navDash').style.display = '';
+  document.getElementById('navPool').style.display = '';
+}
+
+function disconnectWallet(silent=false){
+  userAddr=null;
+  signer=null;
+  provider=null;
+  usdtContract=null;
+  contract=(readProvider && typeof ethers!=='undefined')
+    ? new ethers.Contract(CONTRACT_ADDR,ABI,readProvider)
+    : null;
+  setConnectButton('Connect Wallet');
+  updateWalletButtons(false);
+  resetUserDashboard();
+  hideRegisterGateway();
+  restoreMainNavigation();
+  goPage('dash',document.getElementById('navDash'));
+  loadGlobalStats();
+  loadPool();
+  if(!silent) showToast('Wallet disconnected');
+}
+
 async function restoreWalletSession(){
   try{
     const connected = await syncWalletConnection(false);
     if(!connected){
       setConnectButton('Connect Wallet');
+      updateWalletButtons(false);
       resetUserDashboard();
     }
   }catch(e){
     setConnectButton('Connect Wallet');
+    updateWalletButtons(false);
     resetUserDashboard();
   }
 }
@@ -1575,9 +1684,9 @@ function showDashboardAfterRegister(){
   document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
   document.getElementById('page-dash').classList.add('on');
   // Restore nav
-  document.getElementById('navDash').style.display = '';
+  hideRegisterGateway();
+  restoreMainNavigation();
   document.getElementById('navDash').classList.add('on');
-  document.getElementById('navPool').style.display = '';
   document.getElementById('navPool').classList.remove('on');
 }
 
