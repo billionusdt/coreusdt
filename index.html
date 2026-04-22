@@ -104,29 +104,51 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-ap
 .ts-name.r{color:var(--purple)}
 .ts-rate{font-size:10px;font-weight:800;color:var(--purple)}
 
-/* BONUS MINER CARD */
-.bonus-card{background:var(--card);border:1px solid rgba(168,85,247,0.25);border-radius:var(--radius);padding:20px 22px;margin-bottom:18px}
-.bonus-inner{display:flex;gap:18px}
-.bonus-left{flex:1}
-.bonus-right{width:200px;display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center;border-left:1px solid var(--border);padding-left:18px}
-.mining-ring-wrap{position:relative;width:100px;height:100px}
-.mining-ring-wrap svg{transform:rotate(-90deg)}
-.mining-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.mining-pct{font-size:17px;font-weight:800;color:var(--purple)}
-.mining-sub{font-size:9px;color:var(--muted)}
-.claim-dots{display:flex;gap:5px;flex-wrap:wrap;margin:10px 0}
-.cd{width:26px;height:26px;border-radius:50%;border:2px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;transition:all .3s}
-.cd.done{background:var(--green);border-color:var(--green);color:#fff;font-size:11px}
-.cd.next{border-color:var(--purple);color:var(--purple);animation:glow 1.5s infinite}
-.cd.empty{color:var(--muted)}
+/* BONUS MINER CARD — legacy classes kept for JS compat */
 @keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(168,85,247,.4)}50%{box-shadow:0 0 0 5px rgba(168,85,247,0)}}
-.mining-left-label{font-size:12px;color:var(--muted);text-align:center}
-.mining-left-val{font-size:20px;font-weight:800;color:var(--gold);text-align:center}
-.unlock-paths{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
-.up-item{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:var(--rsm);padding:10px;text-align:center}
+.cd.done{background:var(--green);border-color:var(--green);color:#fff}
+.cd.next{border-color:var(--purple);color:var(--purple);animation:glow 1.5s infinite}
 .up-item.done{border-color:rgba(16,185,129,.4);background:rgba(16,185,129,.07)}
-.up-num{font-size:16px;font-weight:800;color:var(--purple);margin-bottom:3px}
-.up-lbl{font-size:10px;color:var(--muted)}
+
+/* ===== COMPACT BONUS STRIP ===== */
+@keyframes stripShimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes bsPulse{0%,100%{box-shadow:0 0 0 0 rgba(168,85,247,.35),0 4px 24px rgba(168,85,247,.15)}60%{box-shadow:0 0 0 6px rgba(168,85,247,0),0 4px 32px rgba(168,85,247,.35)}}
+@keyframes gemSpin{0%,100%{transform:scale(1) rotate(-5deg)}50%{transform:scale(1.15) rotate(5deg)}}
+
+.bonus-strip{
+  position:relative;display:flex;align-items:center;gap:12px;
+  background:linear-gradient(135deg,rgba(17,21,38,0.97),rgba(26,16,48,0.95));
+  border:1px solid rgba(168,85,247,0.5);border-radius:16px;
+  padding:12px 16px;margin-bottom:16px;overflow:hidden;
+  animation:bsPulse 2.5s ease-in-out infinite;
+}
+.bs-glow{position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg,transparent,rgba(168,85,247,0.06),rgba(6,182,212,0.04),transparent);background-size:200% 100%;animation:stripShimmer 3s linear infinite;pointer-events:none;border-radius:16px}
+.bs-left{flex-shrink:0}
+.bs-icon-wrap{position:relative;width:44px;height:44px}
+.bs-gem{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:16px;animation:gemSpin 3s ease-in-out infinite;z-index:1}
+.bs-ring-mini{position:absolute;inset:0}
+.bs-ring-mini svg{position:absolute;inset:0}
+.bs-ring-pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:var(--purple);z-index:2;margin-top:18px}
+.bs-center{flex:1;min-width:0}
+.bs-title{font-size:12px;font-weight:800;color:var(--text);margin-bottom:4px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.bs-badge{padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(251,191,36,0.15);color:var(--gold);border:1px solid rgba(251,191,36,0.4)}
+.bs-badge.unlocked{background:rgba(16,185,129,0.15);color:var(--green);border-color:rgba(16,185,129,0.4)}
+.bs-live-row{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:5px}
+.bs-live-label{font-size:10px;color:var(--muted);font-weight:600}
+.bs-live-val{font-size:13px;font-weight:800;color:var(--gold);font-family:monospace}
+.bs-sep{color:var(--border);font-size:10px}
+.bs-remain{font-size:10px;color:var(--muted);font-weight:600}
+.bs-bar-wrap{margin-top:3px}
+.bs-bar-track{background:rgba(255,255,255,0.06);border-radius:4px;height:5px;overflow:hidden}
+.bs-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#a855f7,#fbbf24);transition:width .6s;width:0%}
+.bs-right{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:5px}
+.bs-claims-row{text-align:center}
+.bs-claims-val{display:block;font-size:20px;font-weight:800;color:var(--purple);line-height:1}
+.bs-btn{padding:7px 14px!important;font-size:11px!important;white-space:nowrap;min-width:70px}
+@media(max-width:520px){
+  .bonus-strip{flex-wrap:wrap;gap:8px}
+  .bs-right{flex-direction:row;width:100%;justify-content:space-between;border-top:1px solid var(--border);padding-top:8px}
+}
 
 /* ACTIONS */
 .ag{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
@@ -235,6 +257,66 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-ap
 /* SPACE BACKGROUND CANVAS */
 #spaceBg{position:fixed;inset:0;z-index:0;pointer-events:none}
 #app{position:relative;z-index:1}
+
+/* ===== EXTRA PREMIUM DASHBOARD EFFECTS ===== */
+@keyframes neonFlicker{0%,19%,21%,23%,25%,54%,56%,100%{text-shadow:0 0 4px #a855f7,0 0 11px #a855f7,0 0 19px #a855f7}20%,24%,55%{text-shadow:none}}
+@keyframes scanUp{0%{transform:translateY(100%)}100%{transform:translateY(-100%)}}
+@keyframes cardEntrance{from{opacity:0;transform:translateY(24px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes moneyRain{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(120vh) rotate(720deg);opacity:0}}
+@keyframes hueRotate{from{filter:hue-rotate(0deg)}to{filter:hue-rotate(360deg)}}
+@keyframes superPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(168,85,247,.6)}50%{transform:scale(1.02);box-shadow:0 0 0 12px rgba(168,85,247,0)}}
+@keyframes warpLine{0%{transform:scaleX(0);opacity:1}100%{transform:scaleX(1);opacity:0}}
+
+/* Glowing card borders on hover */
+.sc::after{content:'';position:absolute;inset:0;border-radius:var(--radius);background:linear-gradient(135deg,rgba(168,85,247,0),rgba(168,85,247,0));transition:background .3s}
+.sc:hover::after{background:linear-gradient(135deg,rgba(168,85,247,0.06),rgba(6,182,212,0.04))}
+
+/* Money counter glow */
+.ac-amt{text-shadow:0 0 14px rgba(16,185,129,0.4)}
+.roi-main{text-shadow:0 0 20px rgba(6,182,212,0.5)}
+.sc-val.vc{text-shadow:0 0 16px rgba(6,182,212,0.45)}
+.sc-val.vp{text-shadow:0 0 16px rgba(168,85,247,0.45)}
+.sc-val.vg{text-shadow:0 0 16px rgba(16,185,129,0.45)}
+
+/* Premium card scan line effect */
+.card,.sc,.ac{position:relative;overflow:hidden}
+.card::before,.sc::before{content:'';position:absolute;top:-100%;left:0;right:0;height:40%;background:linear-gradient(transparent,rgba(168,85,247,0.03),transparent);animation:scanUp 6s ease-in-out infinite;pointer-events:none;z-index:0}
+
+/* Tier bar shimmer */
+.tier-bar-fill{background:linear-gradient(90deg,#a855f7,#06b6d4,#10b981,#fbbf24);background-size:200% 100%;animation:stripShimmer 2s linear infinite}
+
+/* Action cards premium border glow on hover */
+.ac:hover{border-color:rgba(168,85,247,0.5);box-shadow:0 0 0 1px rgba(168,85,247,0.15),0 8px 32px rgba(168,85,247,0.2)}
+
+/* Stat card entrance stagger */
+.sg .sc:nth-child(1){animation:cardEntrance .4s ease both .05s}
+.sg .sc:nth-child(2){animation:cardEntrance .4s ease both .1s}
+.sg .sc:nth-child(3){animation:cardEntrance .4s ease both .15s}
+.sg .sc:nth-child(4){animation:cardEntrance .4s ease both .2s}
+.ag .ac:nth-child(1){animation:cardEntrance .4s ease both .1s}
+.ag .ac:nth-child(2){animation:cardEntrance .4s ease both .15s}
+.ag .ac:nth-child(3){animation:cardEntrance .4s ease both .2s}
+
+/* ROI ticker SUPER glow */
+.roi-main{font-family:'Courier New',monospace;letter-spacing:1px}
+
+/* Claim button pulse when eligible */
+#claimBonusBtn:not([disabled]){animation:superPulse 2s ease-in-out infinite}
+
+/* Header logo glow */
+.logo-txt .c1{text-shadow:0 0 20px rgba(168,85,247,0.6)}
+.logo-txt .c2{text-shadow:0 0 20px rgba(6,182,212,0.6)}
+
+/* Live tick glow */
+.live-tick{box-shadow:0 0 6px var(--green)}
+
+/* Warp lines on connect button */
+.cbtn::after{content:'';position:absolute;inset:0;border-radius:20px;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.15) 50%,transparent 100%);transform:scaleX(0);transform-origin:left;transition:transform .4s}
+.cbtn{position:relative;overflow:hidden}
+.cbtn:hover::after{animation:warpLine .4s ease forwards}
+
+/* Pool page glow */
+.pool-time-big{text-shadow:0 0 20px rgba(168,85,247,0.5);animation:neonFlicker 4s infinite}
 
 /* FLOATING ASTRONAUT */
 .astro-wrap{position:fixed;right:16px;bottom:90px;z-index:2;pointer-events:none;animation:astronautFloat 4s ease-in-out infinite}
@@ -403,65 +485,58 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
 <!-- DASHBOARD -->
 <div class="page on" id="page-dash">
 
-  <!-- $50 BONUS MINER — BELOW HEADER (moved to top) -->
-  <div class="bonus-card" id="bonusMinerSection" style="margin-bottom:18px">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-      <div>
-        <div class="ctitle" style="margin-bottom:0">$50 Free Bonus Miner</div>
-        <div style="font-size:11px;color:var(--muted);margin-top:3px">Mining 0.5%/day · Claim $5 every 24h after unlock</div>
-      </div>
-      <div id="bonusHeroBadge" style="padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700;background:rgba(251,191,36,0.12);color:var(--gold);border:1px solid rgba(251,191,36,0.3)">Locked</div>
-    </div>
-    <div class="bonus-inner">
-      <div class="bonus-left">
-        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:4px">
-          <span>Mined so far</span><span id="bonusMinedText">$0.00 / $50.00</span>
-        </div>
-        <!-- Live bonus ROI ticker -->
-        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px">
-          <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;font-weight:700"><span class="live-tick"></span>Live Mining</span>
-          <span style="font-size:18px;font-weight:800;color:var(--gold);font-family:monospace" id="bonusLiveROI">$0.000000</span>
-        </div>
-        <div style="background:rgba(255,255,255,0.05);border-radius:6px;height:10px;overflow:hidden;margin-bottom:12px;position:relative">
-          <div id="bonusMinerFill" style="height:100%;border-radius:6px;background:linear-gradient(90deg,#a855f7,#fbbf24);width:0%;transition:width .5s"></div>
-        </div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:8px;font-weight:600">Claim progress ($5 each)</div>
-        <div class="claim-dots" id="claimDots"></div>
-        <div style="font-size:10px;color:var(--muted);margin-top:6px">Remaining: <strong id="bonusRemLeft" style="color:var(--gold)">$50.00 left to mine</strong></div>
+  <!-- $50 BONUS MINER — COMPACT STRIP -->
+  <div class="bonus-strip" id="bonusMinerSection">
+    <!-- Hidden elements to keep all JS IDs intact -->
+    <span id="bonusMinedText" style="display:none">$0.00 / $50.00</span>
+    <div id="claimDots" style="display:none"></div>
+    <div id="up1" style="display:none"><div class="up-num">200</div><div class="up-lbl">Days</div></div>
+    <div id="up2" style="display:none"><div class="up-num">10</div><div class="up-lbl">Refs</div></div>
+    <div id="up3" style="display:none"><div class="up-num">$1K</div><div class="up-lbl">Vol</div></div>
+    <svg style="display:none" width="100" height="100" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
+      <circle cx="50" cy="50" r="40" fill="none" stroke="url(#bg1)" stroke-width="8" stroke-linecap="round" id="miningArc" stroke-dasharray="251.2" stroke-dashoffset="251.2"/>
+      <defs><linearGradient id="bg1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#fbbf24"/></linearGradient></defs>
+    </svg>
+    <div id="miningPct" style="display:none">0%</div>
+    <div id="bonusRemAmt" style="display:none">$50.00</div>
+    <div id="claimsLeft" style="display:none">10</div>
 
-        <div class="unlock-paths" style="margin-top:16px">
-          <div class="up-item" id="up1">
-            <div class="up-num">200</div>
-            <div class="up-lbl">Days passive<br>mining</div>
-          </div>
-          <div class="up-item" id="up2">
-            <div class="up-num">10</div>
-            <div class="up-lbl">Direct refs<br>+ $50 deposit</div>
-          </div>
-          <div class="up-item" id="up3">
-            <div class="up-num">$1K</div>
-            <div class="up-lbl">Direct vol<br>+ $40 deposit</div>
-          </div>
-        </div>
-      </div>
-      <div class="bonus-right">
-        <div class="mining-ring-wrap">
-          <svg width="100" height="100" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
-            <circle cx="50" cy="50" r="40" fill="none" stroke="url(#bg1)" stroke-width="8" stroke-linecap="round" id="miningArc" stroke-dasharray="251.2" stroke-dashoffset="251.2"/>
-            <defs><linearGradient id="bg1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#fbbf24"/></linearGradient></defs>
+    <!-- VISIBLE COMPACT STRIP -->
+    <div class="bs-glow"></div>
+    <div class="bs-left">
+      <div class="bs-icon-wrap">
+        <span class="bs-gem">💎</span>
+        <div class="bs-ring-mini">
+          <div id="bonusMinerFill" style="display:none"></div>
+          <svg width="44" height="44" viewBox="0 0 44 44" style="transform:rotate(-90deg)">
+            <circle cx="22" cy="22" r="18" fill="none" stroke="rgba(168,85,247,0.15)" stroke-width="4"/>
+            <circle cx="22" cy="22" r="18" fill="none" stroke="url(#bsGrad)" stroke-width="4" stroke-linecap="round" id="bsMiniArc" stroke-dasharray="113.1" stroke-dashoffset="113.1"/>
+            <defs><linearGradient id="bsGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#fbbf24"/></linearGradient></defs>
           </svg>
-          <div class="mining-center">
-            <div class="mining-pct" id="miningPct">0%</div>
-            <div class="mining-sub">mined</div>
-          </div>
+          <div class="bs-ring-pct" id="bsMiniPct">0%</div>
         </div>
-        <div class="mining-left-label">Remaining to mine</div>
-        <div class="mining-left-val" id="bonusRemAmt">$50.00</div>
-        <div style="font-size:11px;color:var(--muted);text-align:center">Claims left</div>
-        <div style="font-size:26px;font-weight:800;color:var(--purple);text-align:center" id="claimsLeft">10</div>
-        <button class="abtn ap" style="width:100%" id="claimBonusBtn" type="button">Claim $5 Bonus</button>
       </div>
+    </div>
+    <div class="bs-center">
+      <div class="bs-title">$50 Free Bonus Miner <span id="bonusHeroBadge" class="bs-badge">Locked</span></div>
+      <div class="bs-live-row">
+        <span class="live-tick"></span>
+        <span class="bs-live-label">Mining live:</span>
+        <span class="bs-live-val" id="bonusLiveROI">$0.000000</span>
+        <span class="bs-sep">·</span>
+        <span class="bs-remain" id="bonusRemLeft">$50.00 left</span>
+      </div>
+      <div class="bs-bar-wrap">
+        <div class="bs-bar-track"><div class="bs-bar-fill" id="bonusMinerFillVis" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="bs-right">
+      <div class="bs-claims-row">
+        <span style="font-size:10px;color:var(--muted);font-weight:700">CLAIMS LEFT</span>
+        <span class="bs-claims-val" id="claimsLeftVis">10</span>
+      </div>
+      <button class="abtn ap bs-btn" id="claimBonusBtn" type="button">Claim $5</button>
     </div>
   </div>
 
@@ -1329,6 +1404,41 @@ function buildTierSteps(deposit){
   }
 }
 
+function syncBonusStrip(){
+  // Keep compact strip in sync with hidden JS-controlled elements
+  const pctEl = document.getElementById('miningPct');
+  const remEl = document.getElementById('bonusRemLeft');
+  const clEl  = document.getElementById('claimsLeft');
+  const fillEl= document.getElementById('bonusMinerFill');
+  const badgeEl= document.getElementById('bonusHeroBadge');
+
+  const miniArc = document.getElementById('bsMiniArc');
+  const miniPct = document.getElementById('bsMiniPct');
+  const visFill = document.getElementById('bonusMinerFillVis');
+  const visRem  = document.getElementById('bonusRemLeft'); // same ID — already visible in strip
+  const visClaims = document.getElementById('claimsLeftVis');
+
+  // Sync mini ring arc
+  const pctText = pctEl ? pctEl.textContent : '0%';
+  const pct = parseFloat(pctText)||0;
+  if(miniArc) miniArc.setAttribute('stroke-dashoffset', (113.1*(1-pct/100)).toFixed(1));
+  if(miniPct) miniPct.textContent = pctText;
+
+  // Sync fill bar
+  if(visFill && fillEl) visFill.style.width = fillEl.style.width || '0%';
+
+  // Sync claims
+  if(visClaims && clEl) visClaims.textContent = clEl.textContent;
+
+  // Sync badge style
+  if(badgeEl){
+    const txt = badgeEl.textContent;
+    if(txt==='Unlocked' || txt==='Unlocked'){
+      badgeEl.classList.add('unlocked');
+    }
+  }
+}
+
 function startLiveROI(){
   if(roiAnimationStarted)return;
   roiAnimationStarted = true;
@@ -1347,6 +1457,8 @@ function startLiveROI(){
     requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
+  // Sync strip every 2s
+  setInterval(syncBonusStrip, 2000);
 }
 
 function initClaimDots(claimed){
@@ -1422,6 +1534,7 @@ async function loadDashboard(){
 
     const bonusPct=bonusAmountRaw > 0 ? Math.min(100,(Number(bonusMined)/bonusAmountRaw)*100) : 0;
     document.getElementById('bonusMinerFill').style.width=bonusPct.toFixed(1)+'%';
+    syncBonusStrip();
     document.getElementById('miningPct').textContent=bonusPct.toFixed(1)+'%';
     document.getElementById('miningArc').setAttribute('stroke-dashoffset',(251.2*(1-bonusPct/100)).toFixed(1));
     const bonusRemDollar=Math.max(0,(bonusAmountRaw-Number(bonusMined))/DEC);
@@ -1777,6 +1890,17 @@ function initSpaceCanvas(){
   }
   rockets.push(spawnRocket());
   setInterval(()=>{if(rockets.length<4)rockets.push(spawnRocket())},4500);
+
+  // Floating money particles (DOM based for emoji rendering)
+  const moneyEmojis=['💵','💰','💎','🪙','✨','⭐','🌟'];
+  function spawnMoneyParticle(){
+    const el=document.createElement('div');
+    el.textContent=moneyEmojis[Math.floor(Math.random()*moneyEmojis.length)];
+    el.style.cssText=`position:fixed;left:${Math.random()*95}vw;top:110vh;font-size:${14+Math.random()*10}px;pointer-events:none;z-index:3;opacity:.7;animation:moneyRain ${5+Math.random()*6}s linear forwards`;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),(11)*1000);
+  }
+  setInterval(spawnMoneyParticle,1800);
 
   function draw(){
     ctx.clearRect(0,0,W,H);
